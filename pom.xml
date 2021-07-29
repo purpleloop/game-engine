@@ -58,13 +58,15 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>game-engine-core</module>
-		<!-- teaser : soon available ...
-		<module>game-engine-workshop</module>
+		<module>game-engine-core</module>		
+     	<module>game-engine-sound</module>
+		<!-- 
+		teaser : soon available ...
 		<module>game-engine-action</module>
 		<module>game-engine-action-swing</module>
 		<module>game-engine-board</module>
 		<module>game-engine-board-swing</module>
-		<module>game-engine-sound</module>-->
+		<module>game-engine-workshop</module>
+		-->
 	</modules>
 </project>

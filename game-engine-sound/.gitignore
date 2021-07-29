@@ -1,0 +1,6 @@
+/target/
+/.settings/
+/.classpath
+/.project
+/project-inf.xml
+/.checkstyle
