@@ -17,6 +17,10 @@ The engine can be used for two kind of games :
 
 The project is in progress since years and still very experimental.
 It comes from the merge of several games I have developed during the years.
+
 It is not directly usable for the moment but I'm working on that point ... 
 
+It comes at is is, without any warranty or responsibility of any kind.
+
 I hope it can be nevertheless useful to anyone.
+

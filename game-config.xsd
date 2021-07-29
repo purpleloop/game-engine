@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="config">
+        <xs:annotation>
+            <xs:documentation>Game configuration.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+    		<xs:sequence>
+    			<xs:element
+    				ref="properties"
+    				maxOccurs="1"
+    				minOccurs="0">
+    			</xs:element>
+    			<xs:element
+    				ref="class"
+    				maxOccurs="unbounded"
+    				minOccurs="0">
+    			</xs:element>
+    			<xs:element
+    				ref="keymap"
+    				maxOccurs="unbounded"
+    				minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>This section contains the keyboard mappings definition.
+A given key can be mapped to a game control.</xs:documentation>
+                    </xs:annotation>
+    			</xs:element>
+                <xs:element ref="image" maxOccurs="unbounded" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>This section defines the images used in the engine.</xs:documentation>
+                    </xs:annotation></xs:element>
+    			<xs:element ref="sound" maxOccurs="unbounded" minOccurs="0">
+    			    <xs:annotation>
+    			        <xs:documentation>This section defines the sounds used in the engine.</xs:documentation>
+    			    </xs:annotation></xs:element>
+    		</xs:sequence>
+    	</xs:complexType>
+    </xs:element>
+
+    <xs:element name="property">
+    	<xs:complexType>
+    		<xs:attribute
+    			name="name"
+    			type="xs:string">
+    		</xs:attribute>
+    		<xs:attribute
+    			name="value"
+    			type="xs:string">
+    		</xs:attribute>
+    	</xs:complexType>
+    </xs:element>
+
+    <xs:element name="properties">
+    	<xs:complexType>
+    		<xs:sequence>
+    			<xs:element ref="property" maxOccurs="unbounded" minOccurs="0"></xs:element>
+    		</xs:sequence>
+    	</xs:complexType>
+    </xs:element>
+
+    <xs:element name="class">
+    	<xs:complexType>
+    		<xs:attribute name="role">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:string">
+    					<xs:enumeration value="environment"></xs:enumeration>
+    					<xs:enumeration value="level"></xs:enumeration>
+    					<xs:enumeration value="view"></xs:enumeration>
+    					<xs:enumeration value="session"></xs:enumeration>
+    					<xs:enumeration value="level_provider"></xs:enumeration>
+    					<xs:enumeration value="controller"></xs:enumeration>
+    					<xs:enumeration value="board"></xs:enumeration>
+    					<xs:enumeration value="game"></xs:enumeration>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:attribute>
+    		<xs:attribute
+    			name="classname"
+    			type="ClassName">
+    		</xs:attribute>
+    	</xs:complexType>
+    </xs:element>
+    
+    <xs:element name="keymap">
+    	<xs:complexType>
+    		<xs:attribute
+    			name="key"
+    			type="xs:string">
+    		</xs:attribute>
+    		<xs:attribute
+    			name="action"
+    			type="xs:string">
+    		</xs:attribute>
+    	</xs:complexType>
+    </xs:element>
+
+    <xs:element name="sound">
+    	<xs:complexType>
+    		<xs:attribute
+    			name="name"
+    			type="xs:string">
+    		</xs:attribute>
+    		<xs:attribute
+    			name="location"
+    			type="WavLocation">
+    		</xs:attribute>
+    	</xs:complexType>
+    </xs:element>
+
+    <xs:element name="image">
+    	<xs:complexType>
+    		<xs:attribute
+    			name="name"
+    			type="xs:string">
+    		</xs:attribute>
+    		<xs:attribute
+    			name="location"
+    			type="GifImageLocation">
+    		</xs:attribute>
+    	</xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="ClassName">
+    	<xs:restriction base="xs:string">
+    		<xs:pattern value="[a-zA-Z]+((.)[a-zA-Z]+)*"></xs:pattern>
+    	</xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="GifImageLocation">
+    	<xs:restriction base="xs:string">
+    		<xs:pattern value=".*(.)gif"></xs:pattern>
+    	</xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="WavLocation">
+    	<xs:restriction base="xs:string">
+    		<xs:pattern value=".*(.)wav"></xs:pattern>
+    	</xs:restriction>
+    </xs:simpleType>
+</xs:schema>
