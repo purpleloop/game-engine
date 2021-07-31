@@ -49,10 +49,13 @@ public class GameMainFrame extends JFrame implements KeyListener {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		// Asks the user for the choice of a screen mode
         graphicDeviceManager = GraphicDeviceManager.getInstance();
         graphicDeviceManager.configureScreenMode();
 
-        WindowListener l = new WindowAdapter() {
+		// Setup a handler for restoring the display if necessary
+		// when the game window is closed.
+        WindowListener windowListener = new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
 
                 mainPanel.stopRefresh();
@@ -62,7 +65,7 @@ public class GameMainFrame extends JFrame implements KeyListener {
                 System.exit(0);
             }
         };
-        addWindowListener(l);
+        addWindowListener(windowListener);
 
         mainPanel = new MainPanel(new LocalDataFileProvider(), configFileName);
         setContentPane(mainPanel);
@@ -74,6 +77,8 @@ public class GameMainFrame extends JFrame implements KeyListener {
             delegatedKeyListener = (KeyListener) gameController;
         }
 
+		// Prepares the key listener
+		// This is important to do this here, especially when switching in full screen
         addKeyListener(this);
 
         if (gameController instanceof MouseListener) {
@@ -129,6 +134,7 @@ public class GameMainFrame extends JFrame implements KeyListener {
         }
 
         new GameMainFrame(params.getConfigFileName(), params.isFullScreen());
+		LOG.info("Game main fram is ready");
     }
 
 
