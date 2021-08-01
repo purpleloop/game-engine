@@ -23,7 +23,7 @@ public class GameObject implements IEnvironmentObjet {
 	/** Unique identifier. */
 	private int id;
 
-	/** Vertical location */
+	/** Vertical location. */
 	protected int xLoc;
 
 	/** Horizontal location. */

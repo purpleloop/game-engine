@@ -7,7 +7,7 @@ public abstract class BaseGameEvent implements IGameEvent {
 	private int code;
 
 	/**
-	 * Creates a game event.*
+	 * Creates a game event.
 	 * 
 	 * @param code event code
 	 */

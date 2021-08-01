@@ -83,8 +83,8 @@ public abstract class AbstractEnvironment extends CommonAbstractEnvironment {
 	 * @param loc        the location where to remove the object
 	 * @param objectCode Code of the object to remove
 	 */
-	public void removeObject(GridMobile loc, byte code) {
-		storage.and(loc.getXloc(), loc.getYloc(), OBJECT_MASK_VALUE - code);
+	public void removeObject(GridMobile loc, byte objectCode) {
+		storage.and(loc.getXloc(), loc.getYloc(), OBJECT_MASK_VALUE - objectCode);
 	}
 
 	/** Revive the player agent. */
@@ -103,7 +103,7 @@ public abstract class AbstractEnvironment extends CommonAbstractEnvironment {
 	public abstract boolean isActionPossibleFromLocation(GridMobile loc, int action);
 
 	/**
-	 * Initialize the contents of objects from an array
+	 * Initialize the contents of objects from an array.
 	 * 
 	 * @param width          width of the environment
 	 * @param height         height of the environment

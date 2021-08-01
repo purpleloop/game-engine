@@ -46,7 +46,7 @@ public class GameThread extends Thread {
 	}
 
 	/**
-	 * @param obs thread observer
+	 * @param threadObserver thread observer
 	 */
 	public void setThreadObserver(ThreadObserver threadObserver) {
 		this.threadObserver = threadObserver;

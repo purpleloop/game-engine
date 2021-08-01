@@ -39,14 +39,14 @@ public interface IGameEngine {
 	boolean hasRunningGame();
 
 	/**
-	 * Pauses the game
+	 * Pauses the game.
 	 * 
 	 * @return true if the game is paused, false elsewhere
 	 */
 	boolean pauseGame();
 
 	/**
-	 * Plays a sound
+	 * Plays a sound.
 	 * 
 	 * @param soundName the name of the sound to play as registered in the sound
 	 *                  engine

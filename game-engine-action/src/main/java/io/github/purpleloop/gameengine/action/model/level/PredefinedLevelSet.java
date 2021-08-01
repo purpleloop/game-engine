@@ -13,7 +13,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import io.github.purpleloop.gameengine.action.model.GameProperties;
 import io.github.purpleloop.gameengine.core.config.ClassRole;
 import io.github.purpleloop.gameengine.core.config.GameConfig;
 import io.github.purpleloop.gameengine.core.config.IDataFileProvider;
@@ -21,6 +20,9 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
 
 /** Models a predefined set of game levels predefined in an XML file. */
 public class PredefinedLevelSet implements ILevelManager {
+
+	/** The name of the level set. */
+	public static final String PROPERTY_LEVEL_SET_FILE_NAME = "levelSetFileName";
 
 	/** Class logger. */
 	private static final Log LOG = LogFactory.getLog(PredefinedLevelSet.class);
@@ -40,7 +42,7 @@ public class PredefinedLevelSet implements ILevelManager {
 
 		LOG.debug("Loading game levels");
 
-		String levelSetFileName = config.getProperty(GameProperties.PROPERTY_LEVEL_SET_FILE_NAME);
+		String levelSetFileName = config.getProperty(PROPERTY_LEVEL_SET_FILE_NAME);
 
 		loadFromXML(levelSetFileName, dataFileProvider, config.getClassName(ClassRole.LEVEL));
 	}
@@ -78,7 +80,7 @@ public class PredefinedLevelSet implements ILevelManager {
 			}
 
 		} catch (Exception e) {
-			LOG.error("Error while reading XML predevined level set : " + levelSetFileName, e);
+			LOG.error("Error while reading XML predefined level set : " + levelSetFileName, e);
 		}
 		LOG.debug("Number of loaded levels : " + levels.size());
 	}

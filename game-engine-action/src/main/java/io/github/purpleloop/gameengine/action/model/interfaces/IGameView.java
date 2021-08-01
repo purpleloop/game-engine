@@ -19,12 +19,12 @@ public interface IGameView {
 	/** @return is debug information activated on this view ? */
 	boolean isDebugInfo();
 
-	/** Enables or disable the debug information display
+	/** Enables or disable the debug information display.
 	 * @param active true if debug information should be displayed
 	 *  */
 	void setDebugInfo(boolean active);
 
-	/** Renders the view on a AWT Graphic
+	/** Renders the view on a AWT Graphic.
 	 * @param g graphical device to use
 	 */
 	void paint(Graphics g);

@@ -30,14 +30,14 @@ public interface ISessionEnvironment {
 	void removeObserver(IEnvironmentObserver obs);
 
     /**
-     * Sets the controller for controlled agents
+     * Sets the controller for controlled agents.
      * 
      * @param controller the controller to use
      */
 	void setController(IController controller);
 
     /**
-     * Removes the controller
+     * Removes the controller.
      * 
      * @param controller the controller to remove
      */

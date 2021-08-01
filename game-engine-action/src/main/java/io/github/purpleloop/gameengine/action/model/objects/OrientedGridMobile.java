@@ -9,7 +9,7 @@ public class OrientedGridMobile extends GridMobile {
     /** The direction the mobile is headed to in a 4 way coordination. */
     protected Direction ori = Direction4.NORTH;
 
-    /** Creates an oriented object
+    /** Creates an oriented object.
      * @param x abscissa
      * @param y ordinate
      */

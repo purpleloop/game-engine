@@ -48,7 +48,7 @@ public abstract class CommonAbstractEnvironment implements ISessionEnvironment {
 	}
 
 	/**
-	 * Add an observer to the environment
+	 * Add an observer to the environment.
 	 * 
 	 * @param observer observer to add
 	 */
@@ -69,7 +69,7 @@ public abstract class CommonAbstractEnvironment implements ISessionEnvironment {
 	}
 
 	/**
-	 * Fires a notification of a change in the environment for all observers
+	 * Fires a notification of a change in the environment for all observers.
 	 * 
 	 * @param gameEvent the event causing the change
 	 */
