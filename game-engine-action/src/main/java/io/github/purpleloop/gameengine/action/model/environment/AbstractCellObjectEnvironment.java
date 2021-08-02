@@ -1,5 +1,7 @@
 package io.github.purpleloop.gameengine.action.model.environment;
 
+import java.util.Optional;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -8,6 +10,7 @@ import io.github.purpleloop.gameengine.action.model.interfaces.ISession;
 import io.github.purpleloop.gameengine.action.model.level.IGameLevel;
 import io.github.purpleloop.gameengine.core.config.GameConfig;
 import io.github.purpleloop.gameengine.core.util.EngineException;
+import io.github.purpleloop.gameengine.core.util.Location;
 
 /**
  * This class serves as basis for games where environment is a 2D rectangular
@@ -208,6 +211,24 @@ public abstract class AbstractCellObjectEnvironment extends AbstractObjectEnviro
 
 			LOG.debug(stringBuilder.toString());
 		}
+	}
+
+	/**
+	 * Search for the first cell location matching the given contents.
+	 * 
+	 * @param contents cell content to match
+	 * @return optional location of the first matching cell
+	 */
+	protected Optional<Location> findFirstCellLocationMatchingContents(ICellContents contents) {
+
+		for (int y = 0; y < cellHeight; y++) {
+			for (int x = 0; x < cellWidth; x++) {
+				if (getCellContents(x, y).equals(contents)) {
+					return Optional.of(Location.getLocation(x, y));
+				}
+			}
+		}
+		return Optional.empty();
 	}
 
 }

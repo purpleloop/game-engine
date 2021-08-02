@@ -35,7 +35,7 @@ public abstract class BaseGameView implements IGameView {
 	private Font normalFont;
 
 	/** Information of the current game session. */
-	private ISession sessionCourante;
+	private ISession currentSession;
 
 	/**
 	 * Creates a view for the game.
@@ -164,14 +164,14 @@ public abstract class BaseGameView implements IGameView {
 	}
 
 	@Override
-	public void setSession(ISession s) {
-		sessionCourante = s;
+	public void setSession(ISession session) {
+		currentSession = session;
 		repaint();
 	}
 
 	/** @return the current game session */
-	protected ISession getSessionCourante() {
-		return sessionCourante;
+	protected ISession getCurrentSession() {
+		return currentSession;
 	}
 
 	/** @return The default of the view. */
