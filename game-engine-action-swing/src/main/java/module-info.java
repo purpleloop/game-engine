@@ -1,5 +1,5 @@
 /** The action game module. */
-module game.engine.action.swing {
+module io.github.purpleloop.gameengine.action.swing {
     
 	exports io.github.purpleloop.gameengine.action.gui;
 	exports io.github.purpleloop.gameengine.action.gui.keyboard to io.github.purpleloop.commons;
@@ -8,5 +8,5 @@ module game.engine.action.swing {
 	requires transitive io.github.purpleloop.commons.swing;
 	requires transitive io.github.purpleloop.gameengine.core;
 	requires transitive io.github.purpleloop.gameengine.sound;
-	requires transitive game.engine.action;
+	requires transitive io.github.purpleloop.gameengine.action;
 }

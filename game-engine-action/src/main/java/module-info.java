@@ -1,5 +1,5 @@
 /** The action game module. */
-module game.engine.action {
+module io.github.purpleloop.gameengine.action {
 	
 	exports io.github.purpleloop.gameengine.action.model.actions;
 	exports io.github.purpleloop.gameengine.action.model.environment;
@@ -10,10 +10,10 @@ module game.engine.action {
     exports io.github.purpleloop.gameengine.action.model.session;
     exports io.github.purpleloop.gameengine.action.model;    
     
+    requires java.xml;
+    requires commons.logging;
+    requires org.apache.commons.lang3;
     requires transitive io.github.purpleloop.commons;
     requires transitive io.github.purpleloop.commons.swing;
     requires transitive io.github.purpleloop.gameengine.core;    
-	requires commons.logging;
-	requires java.xml;
-	requires org.apache.commons.lang3;
 }
