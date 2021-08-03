@@ -38,7 +38,7 @@ public class GameThread extends Thread {
 	 * @param activationDelay delay between two session activations
 	 */
 	public GameThread(ISession gameSession, int activationDelay) {
-		super("Creating the game thread");
+		super("GameEngine-GameThread");
 		this.terminated = false;
 		this.paused = false;
 		this.activationDelay = activationDelay;

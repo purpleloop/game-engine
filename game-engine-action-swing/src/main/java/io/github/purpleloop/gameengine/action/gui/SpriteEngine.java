@@ -41,7 +41,7 @@ public interface SpriteEngine {
 	void putSprite(Graphics g, ImageObserver observer, String name, int xl, int yl);
 
 	/**
-	 * Registers a sprite from it's descriptor
+	 * Registers a sprite from it's descriptor.
 	 * 
 	 * @param desc the sprite descriptor
 	 */

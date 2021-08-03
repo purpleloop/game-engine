@@ -6,6 +6,7 @@ import java.util.Timer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import io.github.purpleloop.commons.exception.PurpleException;
 import io.github.purpleloop.commons.lang.ReflexivityTools;
 import io.github.purpleloop.commons.lang.ThreadObserver;
 import io.github.purpleloop.gameengine.action.model.GameThread;
@@ -120,7 +121,11 @@ public class ActionGameEngine implements IGameEngine, ThreadObserver {
 
 		LOG.debug("The game controller class is :" + className);
 
-		gameController = ReflexivityTools.createInstance(className, paramClasses, paramValues);
+		try {
+			gameController = ReflexivityTools.createInstance(className, paramClasses, paramValues);
+		} catch (PurpleException e) {
+			throw new EngineException("Error while creating the game controller.", e);
+		}
 	}
 
 	/**
@@ -143,7 +148,11 @@ public class ActionGameEngine implements IGameEngine, ThreadObserver {
 		paramValues[1] = dataFileProvider;
 		paramValues[2] = ui.getGamePanel();
 
-		gameView = ReflexivityTools.createInstance(config.getClassName(ClassRole.VIEW), paramClasses, paramValues);
+		try {
+			gameView = ReflexivityTools.createInstance(config.getClassName(ClassRole.VIEW), paramClasses, paramValues);
+		} catch (PurpleException e) {
+			throw new EngineException("Error while creating the game view.", e);
+		}
 	}
 
 	/**
@@ -160,8 +169,12 @@ public class ActionGameEngine implements IGameEngine, ThreadObserver {
 		paramValuesLevelManager[0] = config;
 		paramValuesLevelManager[1] = dataFileProvider;
 
-		levelManager = ReflexivityTools.createInstance(config.getClassName(ClassRole.LEVEL_PROVIDER),
-				paramClassesLevelManager, paramValuesLevelManager);
+		try {
+			levelManager = ReflexivityTools.createInstance(config.getClassName(ClassRole.LEVEL_PROVIDER),
+					paramClassesLevelManager, paramValuesLevelManager);
+		} catch (PurpleException e) {
+			throw new EngineException("Error while creating the level manager.", e);
+		}
 	}
 
 	/**
@@ -213,12 +226,12 @@ public class ActionGameEngine implements IGameEngine, ThreadObserver {
 	@Override
 	public void threadDeath(Thread sourceThread) {
 
-		if (sourceThread==gameThd) {
+		if (sourceThread == gameThd) {
 			LOG.debug("The game terminates, switch to idle mode " + sourceThread);
 			gameThd = null;
-			setIdleMode();			
+			setIdleMode();
 		} else {
-			LOG.error("Unexpected thread termination "+sourceThread);
+			LOG.error("Unexpected thread termination " + sourceThread);
 		}
 	}
 

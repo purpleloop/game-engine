@@ -19,7 +19,7 @@ public class SoundPlayThread extends Thread {
      * @param soundFileName The name of the file to play.
      */
     public SoundPlayThread(SoundPlayer soundPlayer, String soundFileName) {
-        super("SoundPlayThread");
+        super("GameEngine-SoundPlayThread");
         this.soundPlayer = soundPlayer;
         this.soundFileName = soundFileName;
     }

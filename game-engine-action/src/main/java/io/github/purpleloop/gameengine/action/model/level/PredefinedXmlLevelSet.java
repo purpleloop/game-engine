@@ -19,16 +19,16 @@ import io.github.purpleloop.gameengine.core.config.IDataFileProvider;
 import io.github.purpleloop.gameengine.core.util.EngineException;
 
 /** Models a predefined set of game levels predefined in an XML file. */
-public class PredefinedLevelSet implements ILevelManager {
+public class PredefinedXmlLevelSet implements ILevelManager {
 
 	/** The name of the level set. */
 	public static final String PROPERTY_LEVEL_SET_FILE_NAME = "levelSetFileName";
 
 	/** Class logger. */
-	private static final Log LOG = LogFactory.getLog(PredefinedLevelSet.class);
+	private static final Log LOG = LogFactory.getLog(PredefinedXmlLevelSet.class);
 
 	/** The game levels. */
-	private List<IGameLevel> levels;
+	private List<XmlGameLevel> levels;
 
 	/**
 	 * Constructor of the game level set.
@@ -37,8 +37,8 @@ public class PredefinedLevelSet implements ILevelManager {
 	 * @param dataFileProvider the data provider
 	 * @throws EngineException in case of problems
 	 */
-	public PredefinedLevelSet(GameConfig config, IDataFileProvider dataFileProvider) throws EngineException {
-		levels = new ArrayList<IGameLevel>();
+	public PredefinedXmlLevelSet(GameConfig config, IDataFileProvider dataFileProvider) throws EngineException {
+		levels = new ArrayList<XmlGameLevel>();
 
 		LOG.debug("Loading game levels");
 
@@ -70,12 +70,12 @@ public class PredefinedLevelSet implements ILevelManager {
 
 			for (int nodeIndex = 0; nodeIndex < levelNodeList.getLength(); nodeIndex++) {
 
-				XMLGameLevel gameLevel = (XMLGameLevel) c.getDeclaredConstructor().newInstance();
+				XmlGameLevel gameLevel = (XmlGameLevel) c.getDeclaredConstructor().newInstance();
 
 				// Warning, the number of nodes is not the number of lines
 
 				levelElement = (Element) levelNodeList.item(nodeIndex);
-				gameLevel.loadFromXML(levelElement);
+				gameLevel.loadFromXml(levelElement);
 				levels.add(gameLevel);
 			}
 

@@ -44,7 +44,7 @@ public class KeyboardController implements KeyListener, IController {
 	private KeyBoardActionMap keyMap;
 
 	/**
-	 * Keyboard controller constructor
+	 * Keyboard controller constructor.
 	 * 
 	 * @param gameEngine Game engine that will be connected for transmit key inputs
 	 */

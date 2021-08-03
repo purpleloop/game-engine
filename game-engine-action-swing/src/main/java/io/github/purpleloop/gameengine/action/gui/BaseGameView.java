@@ -113,7 +113,7 @@ public abstract class BaseGameView implements IGameView {
 	}
 
 	/**
-	 * Registers extra fonts
+	 * Registers extra fonts.
 	 * 
 	 * @param normalFont the normal font to derive from
 	 */

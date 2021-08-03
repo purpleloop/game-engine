@@ -28,7 +28,7 @@ public class RefreshThread extends Thread {
      * @param gamePanel the game panel to refresh
      */
     public RefreshThread(GamePanel gamePanel) {
-        super("RefreshGameViewThread");
+        super("GameEngine-RefreshViewThread");
         this.gamePanel = gamePanel;
     }
 

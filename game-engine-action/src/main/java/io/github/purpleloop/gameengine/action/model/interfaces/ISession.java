@@ -26,7 +26,7 @@ public interface ISession extends IEnvironmentObserver {
 	 */
 	IGameEngine getGameEngine();
 
-	/** Takes a game event ino account in the environment.
+	/** Takes a game event into account in the environment.
 	 * @param event the source event
 	 */
     void environmentChanged(IGameEvent event);

@@ -20,122 +20,121 @@ import io.github.purpleloop.gameengine.core.config.LocalDataFileProvider;
 /** This class implements a main Swing JFrame as a game interface. */
 public class GameMainFrame extends JFrame implements KeyListener {
 
-    /** Serial tag. */
-    private static final long serialVersionUID = 1L;
+	/** Serial tag. */
+	private static final long serialVersionUID = 1L;
 
-    /** Class logger. */
-    private static final Log LOG = LogFactory.getLog(GameMainFrame.class);
+	/** Class logger. */
+	private static final Log LOG = LogFactory.getLog(GameMainFrame.class);
 
-    /** The graphic device manager used to adjust the screen resolution. */
-    private GraphicDeviceManager graphicDeviceManager;
+	/** The graphic device manager used to adjust the screen resolution. */
+	private GraphicDeviceManager graphicDeviceManager;
 
-    /** The main panel principal. */
-    private MainPanel mainPanel;
+	/** The main panel principal. */
+	private MainPanel mainPanel;
 
-    /** The delegated key listener. */
-    private KeyListener delegatedKeyListener;
+	/** The delegated key listener. */
+	private KeyListener delegatedKeyListener;
 
-    /** The delegated mouse listener. */
-    private MouseListener delegatedMouseListener;
+	/** The delegated mouse listener. */
+	private MouseListener delegatedMouseListener;
 
-    /**
-     * The constructor of the game main frame.
-     * 
-     * @param configFileName the configuration file name
-     * @param fullScreen is full screen mode requested ?
-     */
-    public GameMainFrame(String configFileName, boolean fullScreen) {
-        super("Game Engine");
+	/**
+	 * The constructor of the game main frame.
+	 * 
+	 * @param configFileName the configuration file name
+	 * @param fullScreen     is full screen mode requested ?
+	 */
+	public GameMainFrame(String configFileName, boolean fullScreen) {
+		super("Game Engine");
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Asks the user for the choice of a screen mode
-        graphicDeviceManager = GraphicDeviceManager.getInstance();
-        graphicDeviceManager.configureScreenMode();
+		graphicDeviceManager = GraphicDeviceManager.getInstance();
+		graphicDeviceManager.configureScreenMode();
 
 		// Setup a handler for restoring the display if necessary
 		// when the game window is closed.
-        WindowListener windowListener = new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
+		WindowListener windowListener = new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
 
-                mainPanel.stopRefresh();
-                graphicDeviceManager.restoreDisplay();
+				mainPanel.stopRefresh();
+				graphicDeviceManager.restoreDisplay();
 
-                LOG.debug("Normal termination of the game engine application, exiting the JVM.");
-                System.exit(0);
-            }
-        };
-        addWindowListener(windowListener);
+				LOG.debug("Normal termination of the game engine application, exiting the JVM.");
+				System.exit(0);
+			}
+		};
+		addWindowListener(windowListener);
 
-        mainPanel = new MainPanel(new LocalDataFileProvider(), configFileName);
-        setContentPane(mainPanel);
+		mainPanel = new MainPanel(new LocalDataFileProvider(), configFileName);
+		setContentPane(mainPanel);
 
-        IGameEngine gameEngine = mainPanel.getGameEngine(); 
-        IController gameController = gameEngine.getController();
+		IGameEngine gameEngine = mainPanel.getGameEngine();
+		IController gameController = gameEngine.getController();
 
-        if (gameController instanceof KeyListener) {
-            delegatedKeyListener = (KeyListener) gameController;
-        }
+		if (gameController instanceof KeyListener) {
+			delegatedKeyListener = (KeyListener) gameController;
+		}
 
 		// Prepares the key listener
 		// This is important to do this here, especially when switching in full screen
-        addKeyListener(this);
+		addKeyListener(this);
 
-        if (gameController instanceof MouseListener) {
-            delegatedMouseListener = (MouseListener) gameController;
-            addMouseListener(delegatedMouseListener);
-        }
+		if (gameController instanceof MouseListener) {
+			delegatedMouseListener = (MouseListener) gameController;
+			addMouseListener(delegatedMouseListener);
+		}
 
-        graphicDeviceManager.initDisplayUsingFrame(this,true);
+		graphicDeviceManager.initDisplayUsingFrame(this, true);
 
-        setVisible(true);
-        requestFocus();
-    }
+		setVisible(true);
+		requestFocus();
+	}
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if ((e.getKeyCode() == KeyEvent.VK_ESCAPE) && (!mainPanel.getGameEngine().hasRunningGame())) {
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if ((e.getKeyCode() == KeyEvent.VK_ESCAPE) && (!mainPanel.getGameEngine().hasRunningGame())) {
 
-            LOG.info("Escape key has been pressed - Closing the main frame ..."); 
-            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-        } else if (delegatedKeyListener != null) {
-            delegatedKeyListener.keyPressed(e);
-        }
-    }
+			LOG.info("Escape key has been pressed - Closing the main frame ...");
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+		} else if (delegatedKeyListener != null) {
+			delegatedKeyListener.keyPressed(e);
+		}
+	}
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        if (delegatedKeyListener != null) {
-            delegatedKeyListener.keyTyped(e);
-        }
-    }
+	@Override
+	public void keyTyped(KeyEvent e) {
+		if (delegatedKeyListener != null) {
+			delegatedKeyListener.keyTyped(e);
+		}
+	}
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (delegatedKeyListener != null) {
-            delegatedKeyListener.keyReleased(e);
-        }
-    }
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (delegatedKeyListener != null) {
+			delegatedKeyListener.keyReleased(e);
+		}
+	}
 
-    /**
-     * Game application entry point.
-     * 
-     * @param args Command line arguments
-     */
-    public static void main(String[] args) {
+	/**
+	 * Game application entry point.
+	 * 
+	 * @param args Command line arguments
+	 */
+	public static void main(String[] args) {
 
-        LOG.info("Launching the game ...");
+		LOG.info("Launching the game ...");
 
-        LaunchingParameters params = new LaunchingParameters();
-        params.analyseParameters(args);
-        
-        if (params.hasErrors()) {
-            System.exit(1);
-        }
+		LaunchingParameters params = new LaunchingParameters();
+		params.analyseParameters(args);
 
-        new GameMainFrame(params.getConfigFileName(), params.isFullScreen());
-		LOG.info("Game main fram is ready");
-    }
+		if (params.hasErrors()) {
+			System.exit(1);
+		}
 
+		new GameMainFrame(params.getConfigFileName(), params.isFullScreen());
+		LOG.info("Game main frame is ready");
+	}
 
 }
