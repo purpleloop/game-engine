@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import io.github.purpleloop.gameengine.action.model.level.ILevelManager;
 import io.github.purpleloop.gameengine.core.config.GameConfig;
+import io.github.purpleloop.gameengine.core.interfaces.IRootGameEngine;
 import io.github.purpleloop.gameengine.core.sound.interfaces.MutableSoundEngine;
 import io.github.purpleloop.gameengine.core.util.EngineException;
 
@@ -12,7 +13,7 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
  * rules the exchanges of the game model with the external elements like the
  * user interface, the controller, the virtual machine and so on.
  */
-public interface IGameEngine {
+public interface IGameEngine extends IRootGameEngine  {
 
 	/**
 	 * @return the game configuration

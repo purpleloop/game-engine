@@ -29,6 +29,11 @@ public enum ClassRole {
     // --- Board games ------------------------------------------------
     
     /** Role of a class implementing the board in the model. */
-    BOARD;
+    BOARD,
 
+    // --- Network ------------------------------------------------
+    
+    /** Role of a class implementing the message factory. */
+    MESSAGE_FACTORY;
+	
 }

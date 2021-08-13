@@ -59,7 +59,8 @@
 
 	<modules>
 		<module>game-engine-core</module>		
-     	<module>game-engine-sound</module>
+     	<module>game-engine-sound</module>     	      
+        <module>game-engine-network</module>
 		<module>game-engine-action</module>
 		<module>game-engine-action-swing</module>
 		<!-- 

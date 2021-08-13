@@ -1,8 +1,9 @@
 /** The core module of the game engine. */
 module io.github.purpleloop.gameengine.core {
 
-	exports io.github.purpleloop.gameengine.core.sound.interfaces;
+	exports io.github.purpleloop.gameengine.core.interfaces;
 	exports io.github.purpleloop.gameengine.core.config;
+	exports io.github.purpleloop.gameengine.core.sound.interfaces;
 	exports io.github.purpleloop.gameengine.core.util;
 	
 	requires transitive io.github.purpleloop.commons;
