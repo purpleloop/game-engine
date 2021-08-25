@@ -63,10 +63,10 @@
         <module>game-engine-network</module>
 		<module>game-engine-action</module>
 		<module>game-engine-action-swing</module>
-		<!-- 
-		teaser : soon available ...
 		<module>game-engine-board</module>
 		<module>game-engine-board-swing</module>
+		<!-- 
+		teaser : soon available ...
 		<module>game-engine-workshop</module>
 		-->
 	</modules>
