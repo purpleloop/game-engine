@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -69,6 +70,9 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 
 			// Read the start level
 			startLevel = root.getAttribute("start");
+			if (StringUtils.isBlank(startLevel)) {
+				throw new EngineException("Unable to find the start level.");
+			}
 
 			NodeList levelNodeList = root.getElementsByTagName("level");
 			Element levelElement;
@@ -107,14 +111,15 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 
 	@Override
 	public XmlGameLevel getNextLevel(String index) {
-		
+
 		// If there is no current level, returns the start level
 		if (index.equals(ILevelManager.NO_LEVEL)) {
 			return getLevel(startLevel);
 		}
-		
+
 		// Return next level
-		// TODO Maybe improve here to allow conditional level changes (this could be a cool thing)
+		// TODO Maybe improve here to allow conditional level changes (this could be a
+		// cool thing)
 		return getLevel(getLevel(index).getNextLevel());
 	}
 

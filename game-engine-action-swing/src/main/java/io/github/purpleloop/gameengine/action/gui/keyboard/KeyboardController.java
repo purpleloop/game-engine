@@ -28,9 +28,11 @@ public class KeyboardController implements KeyListener, IController {
 	/** Class logger. */
 	public static final Log LOG = LogFactory.getLog(KeyboardController.class);
 
-	/** FIXME : A dummy legacy constant - AFAIR was for single controller adaptation. */
+	/**
+	 * FIXME : A dummy legacy constant - AFAIR was for single controller adaptation.
+	 */
 	private static final String DUMMY_ALL_CONSTANT = "ALL";
-	
+
 	/** Game engine where to transmit the inputs. */
 	private IGameEngine gameEngine;
 
@@ -65,7 +67,9 @@ public class KeyboardController implements KeyListener, IController {
 
 		keyActionRegistry.register(KeyEvent.VK_ENTER, () -> {
 			try {
-				gameEngine.startGame();
+				if (!gameEngine.hasRunningGame()) {
+					gameEngine.startGame();
+				}
 			} catch (EngineException e) {
 				LOG.error("Game could not be started.", e);
 			}
@@ -86,7 +90,7 @@ public class KeyboardController implements KeyListener, IController {
 
 		);
 	}
-	
+
 	@Override
 	public void keyPressed(KeyEvent keyEvent) {
 		int keyCode = keyEvent.getKeyCode();
