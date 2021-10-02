@@ -1,8 +1,8 @@
 package io.github.purpleloop.gameengine.action.model.level;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,7 +28,10 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 	private static final Log LOG = LogFactory.getLog(PredefinedXmlLevelSet.class);
 
 	/** The game levels. */
-	private List<XmlGameLevel> levels;
+	private Map<String, XmlGameLevel> levels;
+
+	/** The start level. */
+	private String startLevel;
 
 	/**
 	 * Constructor of the game level set.
@@ -38,7 +41,7 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 	 * @throws EngineException in case of problems
 	 */
 	public PredefinedXmlLevelSet(GameConfig config, IDataFileProvider dataFileProvider) throws EngineException {
-		levels = new ArrayList<XmlGameLevel>();
+		levels = new HashMap<>();
 
 		LOG.debug("Loading game levels");
 
@@ -64,6 +67,9 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 			// Get the root level
 			Element root = doc.getDocumentElement();
 
+			// Read the start level
+			startLevel = root.getAttribute("start");
+
 			NodeList levelNodeList = root.getElementsByTagName("level");
 			Element levelElement;
 			Class<?> c = Class.forName(levelClassName);
@@ -76,7 +82,11 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 
 				levelElement = (Element) levelNodeList.item(nodeIndex);
 				gameLevel.loadFromXml(levelElement);
-				levels.add(gameLevel);
+
+				String levelID = gameLevel.getId();
+				LOG.info("Registering level " + levelID);
+
+				levels.put(levelID, gameLevel);
 			}
 
 		} catch (Exception e) {
@@ -91,8 +101,21 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 	 * @param index the level index
 	 * @return the game level
 	 */
-	public IGameLevel getLevel(int index) {
+	public XmlGameLevel getLevel(String index) {
 		return levels.get(index);
+	}
+
+	@Override
+	public XmlGameLevel getNextLevel(String index) {
+		
+		// If there is no current level, returns the start level
+		if (index.equals(ILevelManager.NO_LEVEL)) {
+			return getLevel(startLevel);
+		}
+		
+		// Return next level
+		// TODO Maybe improve here to allow conditional level changes (this could be a cool thing)
+		return getLevel(getLevel(index).getNextLevel());
 	}
 
 	@Override

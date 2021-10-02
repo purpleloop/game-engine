@@ -10,6 +10,7 @@ import io.github.purpleloop.gameengine.action.model.interfaces.ISession;
 import io.github.purpleloop.gameengine.action.model.interfaces.ISessionEnvironment;
 import io.github.purpleloop.gameengine.action.model.level.IGameLevel;
 import io.github.purpleloop.gameengine.action.model.level.ILevelManager;
+import io.github.purpleloop.gameengine.action.model.level.XmlGameLevel;
 import io.github.purpleloop.gameengine.core.config.ClassRole;
 import io.github.purpleloop.gameengine.core.util.EngineException;
 
@@ -19,14 +20,11 @@ public class EnvironmentProvider {
 	/** Class logger. */
 	private static final Log LOG = LogFactory.getLog(EnvironmentProvider.class);
 
-	/** Indicates there is currently no current level. */
-	private static final int NO_LEVEL = -1;
-
 	/** The game engine holding the level manager and providing level resources. */
 	private IGameEngine gameEngine;
 
-	/** Current level index. */
-	protected int currentLevelIndex = NO_LEVEL;
+	/** Current level id. */
+	protected String currentLevelIndex = ILevelManager.NO_LEVEL;
 
 	/**
 	 * Constructor of the environment provider.
@@ -50,22 +48,17 @@ public class EnvironmentProvider {
 	 */
 	public ISessionEnvironment getEnvironmentForNextLevel(ISession session) throws EngineException {
 
-		// FIME : may be a feature envy, it's more the level manager that knows what the
-		// next level will be ...
-		// Possible improvement here : make levels/maps links less linear, a graph
-		// defined in level set ?
-		ILevelManager levelManager = gameEngine.getLevelManager();
-		if (currentLevelIndex < levelManager.getSize() - 1) {
-			currentLevelIndex++;
-		}
-
-		LOG.debug("Initialization of game for the level : " + currentLevelIndex);
-
 		Class<?>[] paramClasses = new Class<?>[2];
 		paramClasses[0] = ISession.class;
 		paramClasses[1] = IGameLevel.class;
 
-		IGameLevel level = levelManager.getLevel(currentLevelIndex);
+		ILevelManager levelManager = gameEngine.getLevelManager();
+				
+		XmlGameLevel level = (XmlGameLevel) levelManager.getNextLevel(currentLevelIndex);
+		
+		currentLevelIndex = level.getId();
+		
+		LOG.debug("Initialization of game for the level : " + level.getId());
 
 		Object[] paramValues = new Object[2];
 		paramValues[0] = session;

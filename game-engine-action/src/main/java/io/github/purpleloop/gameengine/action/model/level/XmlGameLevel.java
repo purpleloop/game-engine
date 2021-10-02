@@ -5,6 +5,12 @@ import org.w3c.dom.Element;
 /** A game level expressed in XML. */
 public interface XmlGameLevel extends IGameLevel {
 
+    /** @return the level id */
+	String getId();
+
+    /** @return the next level id */
+	String getNextLevel();
+
     /**
      * Loads a level from an XML element.
      * 

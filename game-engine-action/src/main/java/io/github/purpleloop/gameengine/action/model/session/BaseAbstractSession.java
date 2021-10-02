@@ -120,6 +120,8 @@ public abstract class BaseAbstractSession implements ISession {
 	 * @throws EngineException in case of problem
 	 */
 	private void setupNextLevel() throws EngineException {
+	
+		LOG.info("Setup next level");
 		cleanupCurrentEnvironment();
 		currentEnvironment = environmentProvider.getEnvironmentForNextLevel(this);
 		currentEnvironment.setController(gameEngine.getController());
