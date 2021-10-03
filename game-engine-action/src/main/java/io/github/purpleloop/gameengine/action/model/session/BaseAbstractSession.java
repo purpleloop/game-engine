@@ -114,6 +114,8 @@ public abstract class BaseAbstractSession implements ISession {
 
         if (currentEnvironment != null) {
             LOG.debug("Cleaning the current environment");
+
+            currentEnvironment.specificCleanUp();
             currentEnvironment.removeController(gameEngine.getController());
             currentEnvironment.removeObserver(this);
             currentEnvironment = null;

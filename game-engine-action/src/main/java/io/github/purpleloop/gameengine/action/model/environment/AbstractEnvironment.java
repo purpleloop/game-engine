@@ -125,4 +125,8 @@ public abstract class AbstractEnvironment extends CommonAbstractEnvironment {
 	 * @return direction
 	 */
 	public abstract Direction getOrientationForAction(int atemptedAction);
+
+    @Override
+    public void specificCleanUp() {
+    }
 }

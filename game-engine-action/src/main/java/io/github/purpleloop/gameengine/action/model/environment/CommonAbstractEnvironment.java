@@ -136,4 +136,7 @@ public abstract class CommonAbstractEnvironment implements ISessionEnvironment {
 		return this.controlled;
 	}
 
+	@Override
+    public void specificCleanUp() {
+    }
 }

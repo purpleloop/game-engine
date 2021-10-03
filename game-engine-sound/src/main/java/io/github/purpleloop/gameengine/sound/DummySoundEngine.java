@@ -1,5 +1,7 @@
 package io.github.purpleloop.gameengine.sound;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,6 +40,16 @@ public class DummySoundEngine implements MutableSoundEngine {
 
     /** {@inheritDoc} */
     public void switchSounds() {
+    }
+
+    @Override
+    public void playBackgroundSound(File bgSoundFile) {
+        LOG.debug("Dummy playing background music file " + bgSoundFile.getAbsolutePath());
+    }
+
+    @Override
+    public void stopBackgroundSound() {
+        LOG.debug("Dummy stop playing background music file ");
     }
 
 }

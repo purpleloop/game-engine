@@ -1,10 +1,13 @@
 package io.github.purpleloop.gameengine.sound;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import io.github.purpleloop.gameengine.core.sound.interfaces.MutableSoundEngine;
 import io.github.purpleloop.gameengine.core.sound.interfaces.SoundEngine;
+import io.github.purpleloop.gameengine.core.util.EngineException;
 
 /** Class adapter for the sound engine that allows to mute/unmute sounds. */
 public class MutableSoundEngineAdapter implements MutableSoundEngine {
@@ -66,6 +69,20 @@ public class MutableSoundEngineAdapter implements MutableSoundEngine {
     /** {@inheritDoc} */
     public boolean canPlaySounds() {
         return canPlaySounds;
+    }
+
+    @Override
+    public void playBackgroundSound(File bgSoundFile) throws EngineException {
+        if (canPlaySounds) {
+            delegate.playBackgroundSound(bgSoundFile);
+        }
+    }
+
+    @Override
+    public void stopBackgroundSound() {
+        if (canPlaySounds) {
+            delegate.stopBackgroundSound();
+        }
     }
 
 }

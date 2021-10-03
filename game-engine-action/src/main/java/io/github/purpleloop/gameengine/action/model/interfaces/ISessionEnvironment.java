@@ -43,4 +43,7 @@ public interface ISessionEnvironment {
      */
     void removeController(IController controller);
 
+    /** Do a specific cleanup of the environment, if necessary. */
+    void specificCleanUp();
+
 }
