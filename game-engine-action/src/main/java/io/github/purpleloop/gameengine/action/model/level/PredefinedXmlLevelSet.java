@@ -57,8 +57,10 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 	 * @param levelSetFileName name of the level set file
 	 * @param dfp              data file provider
 	 * @param levelClassName   name of the level class
+	 * @throws EngineException in case of errors while loading
 	 */
-	public void loadFromXML(String levelSetFileName, IDataFileProvider dfp, String levelClassName) {
+	public void loadFromXML(String levelSetFileName, IDataFileProvider dfp, String levelClassName)
+			throws EngineException {
 
 		try (InputStream is = dfp.getInputStream(levelSetFileName);) {
 
@@ -95,6 +97,7 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 
 		} catch (Exception e) {
 			LOG.error("Error while reading XML predefined level set : " + levelSetFileName, e);
+			throw new EngineException("Error while reading the XML level set " + levelSetFileName, e);
 		}
 		LOG.debug("Number of loaded levels : " + levels.size());
 	}
