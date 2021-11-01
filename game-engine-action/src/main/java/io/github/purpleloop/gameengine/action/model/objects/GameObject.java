@@ -14,6 +14,19 @@ import io.github.purpleloop.gameengine.action.model.interfaces.IEnvironmentObjet
  */
 public class GameObject implements IEnvironmentObjet {
 
+	/** A default appearance. */
+	private static final IAppearance DEFAULT_APPAREANCE = new IAppearance() {
+
+		/** Default appearance name. */
+		private static final String DEFAULT_NAME = "default-apprearance";
+
+		@Override
+		public String getName() {
+			return DEFAULT_NAME;
+		}
+		
+	};
+
 	/** Next unique identifier for game objects. */
 	private static int nextId;
 
@@ -142,6 +155,11 @@ public class GameObject implements IEnvironmentObjet {
 
 	public String descibeLocation() {
 		return "(" + xLoc + "," + yLoc + ")";
+	}
+
+	@Override
+	public IAppearance getAppearance() {
+		return DEFAULT_APPAREANCE;
 	}
 
 }
