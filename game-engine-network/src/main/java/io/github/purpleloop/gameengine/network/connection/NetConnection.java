@@ -89,16 +89,14 @@ public abstract class NetConnection extends Thread {
 
 				while ((state == NetConnectionState.LISTENING) && (readChar != -1)) {
 
-					if (readChar == CHARACTER_LINE_FEED) {
-						// Ignores line feeds
-					} else if (readChar == CHARACTER_CARRIAGE_RETURN) {
+					if (readChar == CHARACTER_CARRIAGE_RETURN) {
 						log.debug(connectionName + "::run - Raw incoming message : " + rawMessage);
 						String rawMessageString = rawMessage.toString();
 						messageBox.receive(netMessageFactory.decodeMessage(rawMessageString));
 						connectionObserver.notifyAvailableMessage(this);
 						rawMessage.delete(0, rawMessage.length());
 
-					} else {
+					} else if (readChar != CHARACTER_LINE_FEED) {
 						rawMessage.append((char) readChar);
 					}
 

@@ -59,11 +59,11 @@ public abstract class AbstractObjectEnvironment extends CommonAbstractEnvironmen
 	 * @param level the game level
 	 * @throws EngineException in case of problems during environment creation
 	 */
-	public AbstractObjectEnvironment(ISession session, IGameLevel level) throws EngineException {
+	protected AbstractObjectEnvironment(ISession session, IGameLevel level) throws EngineException {
 		super(session);
-		this.envObjects = new LinkedList<IEnvironmentObjet>();
-		this.removeList = new LinkedList<IEnvironmentObjet>();
-		this.addedList = new LinkedList<IEnvironmentObjet>();
+		this.envObjects = new LinkedList<>();
+		this.removeList = new LinkedList<>();
+		this.addedList = new LinkedList<>();
 		this.level = level;
 
 		GameConfig config = session.getGameEngine().getConfig();

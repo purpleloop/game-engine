@@ -29,6 +29,12 @@ public abstract class AbstractCellObjectEnvironment extends AbstractObjectEnviro
 	/** Cell size property. */
 	private static final String ENVIRONMENT_CELL_SIZE = "environment.cellSize";
 
+	/**
+	 * Maximum number of tries before giving up in searches. Should be sufficiently
+	 * large to allow dispersion and sufficiently small to prevent blocking.
+	 */
+	private static final int MAX_TRIES_FOR_SEARCHES = 10000;
+
 	/** Width of the environment, expressed in base units. */
 	protected int width;
 
@@ -55,7 +61,7 @@ public abstract class AbstractCellObjectEnvironment extends AbstractObjectEnviro
 	 *                build this environment
 	 * @throws EngineException in case of problems during environment creation
 	 */
-	public AbstractCellObjectEnvironment(ISession session, IGameLevel level) throws EngineException {
+	protected AbstractCellObjectEnvironment(ISession session, IGameLevel level) throws EngineException {
 		super(session, level);
 
 		GameConfig config = session.getGameEngine().getConfig();
@@ -229,6 +235,35 @@ public abstract class AbstractCellObjectEnvironment extends AbstractObjectEnviro
 			}
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * Get an allowed random location for the given object.
+	 * 
+	 * @param object the tested object
+	 * @return an optional allowed location
+	 */
+	public Optional<Location> findRandomAllowedLocationForObject(IEnvironmentObjet object) {
+
+		int cellX;
+		int cellY;
+		int tries = 0;
+
+		boolean locationFound = false;
+
+		do {
+			cellX = random.nextInt(cellWidth);
+			cellY = random.nextInt(cellHeight);
+			locationFound = isObjectAllowedAtCell(object, cellX, cellY);
+			tries++;
+
+		} while ((tries < MAX_TRIES_FOR_SEARCHES) && !locationFound);
+
+		if (locationFound) {
+			return Optional.of(Location.getLocation(cellX, cellY));
+		} else {
+			return Optional.empty();
+		}
 	}
 
 }

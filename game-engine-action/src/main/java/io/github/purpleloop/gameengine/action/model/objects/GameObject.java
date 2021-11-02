@@ -18,7 +18,7 @@ public class GameObject implements IEnvironmentObjet {
 	private static final IAppearance DEFAULT_APPAREANCE = new IAppearance() {
 
 		/** Default appearance name. */
-		private static final String DEFAULT_NAME = "default-apprearance";
+		private static final String DEFAULT_NAME = "default-appearance";
 
 		@Override
 		public String getName() {
@@ -53,7 +53,7 @@ public class GameObject implements IEnvironmentObjet {
 
 		name = "dummy";
 		id = nextId++;
-		properties = new HashMap<String, Object>();
+		properties = new HashMap<>();
 	}
 
 	@Override
@@ -109,6 +109,7 @@ public class GameObject implements IEnvironmentObjet {
 
 	@Override
 	public void evolve() {
+		// A default object does not evolve in any way.
 	}
 
 	@Override

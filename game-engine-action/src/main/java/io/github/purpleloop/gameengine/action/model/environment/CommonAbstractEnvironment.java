@@ -2,6 +2,7 @@ package io.github.purpleloop.gameengine.action.model.environment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.github.purpleloop.gameengine.action.model.events.IGameEvent;
 import io.github.purpleloop.gameengine.action.model.interfaces.IControllable;
@@ -36,6 +37,9 @@ public abstract class CommonAbstractEnvironment implements ISessionEnvironment {
 
 	/** The controlled element of the environment. */
 	private IControllable controlled;
+	
+	/** A reusable random generator for this environment. */
+	protected Random random = new Random();
 
 	/**
 	 * Base constructor.
