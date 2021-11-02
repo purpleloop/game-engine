@@ -29,17 +29,18 @@ public abstract class CommonAbstractEnvironment implements ISessionEnvironment {
 	/** The 'do nothing' action. */
 	public static final int ACTION_NONE = -1;
 
-	/** Environment observers. */
-	private List<IEnvironmentObserver> environmentObservers;
-
 	/** The game session that serves as context for the environment. */
 	protected ISession session;
+
+	/** A reusable random generator for this environment. */
+	protected Random random = new Random();
+
+	/** Environment observers. */
+	private List<IEnvironmentObserver> environmentObservers;
 
 	/** The controlled element of the environment. */
 	private IControllable controlled;
 	
-	/** A reusable random generator for this environment. */
-	protected Random random = new Random();
 
 	/**
 	 * Base constructor.

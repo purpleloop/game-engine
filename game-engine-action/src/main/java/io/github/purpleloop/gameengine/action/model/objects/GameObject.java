@@ -3,6 +3,7 @@ package io.github.purpleloop.gameengine.action.model.objects;
 import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import io.github.purpleloop.commons.direction.Direction;
 import io.github.purpleloop.gameengine.action.model.interfaces.IEnvironmentObjet;
@@ -44,6 +45,9 @@ public class GameObject implements IEnvironmentObjet {
 
 	/** Direction (heading). */
 	protected Direction orientation = Direction.NONE;
+
+	/** A reusable random generator for agents. */
+	protected Random random = new Random();
 
 	/** Extra properties. */
 	private Map<String, Object> properties;
