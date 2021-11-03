@@ -67,6 +67,20 @@ public final class Location {
         return (x == otherLoc.x) && (y == otherLoc.y);
     }
 
+    /** Tests if the location equals to a given coordinate set.
+     * @param xt the abscissa to test
+     * @param yt the ordinate to test
+     * @return true if locations equals to (xt, yt), false otherwise
+     */
+    public boolean equals(int xt, int yt) {
+        return (x == xt) && (y == yt);
+    }    
+    
+    @Override
+    public String toString() {
+        return String.format("(%d, %d)", x, y);
+    }
+
     /**
      * Hashcode for a position given by it's coordinates.
      * 
