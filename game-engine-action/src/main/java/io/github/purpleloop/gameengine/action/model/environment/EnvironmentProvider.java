@@ -10,7 +10,6 @@ import io.github.purpleloop.gameengine.action.model.interfaces.ISession;
 import io.github.purpleloop.gameengine.action.model.interfaces.ISessionEnvironment;
 import io.github.purpleloop.gameengine.action.model.level.IGameLevel;
 import io.github.purpleloop.gameengine.action.model.level.ILevelManager;
-import io.github.purpleloop.gameengine.action.model.level.XmlGameLevel;
 import io.github.purpleloop.gameengine.core.config.ClassRole;
 import io.github.purpleloop.gameengine.core.util.EngineException;
 
@@ -54,7 +53,7 @@ public class EnvironmentProvider {
 
 		ILevelManager levelManager = gameEngine.getLevelManager();
 				
-		XmlGameLevel level = (XmlGameLevel) levelManager.getNextLevel(currentLevelIndex);
+		IGameLevel level = levelManager.getNextLevel(currentLevelIndex);
 		
 		currentLevelIndex = level.getId();
 		

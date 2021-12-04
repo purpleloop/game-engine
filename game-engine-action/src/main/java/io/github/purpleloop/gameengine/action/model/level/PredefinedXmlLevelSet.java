@@ -22,113 +22,119 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
 /** Models a predefined set of game levels predefined in an XML file. */
 public class PredefinedXmlLevelSet implements ILevelManager {
 
-	/** The name of the level set. */
-	public static final String PROPERTY_LEVEL_SET_FILE_NAME = "levelSetFileName";
+    /** The name of the level set. */
+    public static final String PROPERTY_LEVEL_SET_FILE_NAME = "levelSetFileName";
 
-	/** Class logger. */
-	private static final Log LOG = LogFactory.getLog(PredefinedXmlLevelSet.class);
+    /** Class logger. */
+    private static final Log LOG = LogFactory.getLog(PredefinedXmlLevelSet.class);
 
-	/** The game levels. */
-	private Map<String, XmlGameLevel> levels;
+    /** The game levels. */
+    private Map<String, XmlGameLevel> levels;
 
-	/** The start level. */
-	private String startLevel;
+    /** The start level. */
+    private String startLevel;
 
-	/**
-	 * Constructor of the game level set.
-	 * 
-	 * @param config           the game configuration
-	 * @param dataFileProvider the data provider
-	 * @throws EngineException in case of problems
-	 */
-	public PredefinedXmlLevelSet(GameConfig config, IDataFileProvider dataFileProvider) throws EngineException {
-		levels = new HashMap<>();
+    /**
+     * Constructor of the game level set.
+     * 
+     * @param config the game configuration
+     * @param dataFileProvider the data provider
+     * @throws EngineException in case of problems
+     */
+    public PredefinedXmlLevelSet(GameConfig config, IDataFileProvider dataFileProvider)
+            throws EngineException {
+        levels = new HashMap<>();
 
-		LOG.debug("Loading game levels");
+        LOG.debug("Loading game levels");
 
-		String levelSetFileName = config.getProperty(PROPERTY_LEVEL_SET_FILE_NAME);
+        String levelSetFileName = config.getProperty(PROPERTY_LEVEL_SET_FILE_NAME);
 
-		loadFromXML(levelSetFileName, dataFileProvider, config.getClassName(ClassRole.LEVEL));
-	}
+        loadFromXML(levelSetFileName, dataFileProvider, config.getClassName(ClassRole.LEVEL));
+    }
 
-	/**
-	 * Load a game level set from a file.
-	 * 
-	 * @param levelSetFileName name of the level set file
-	 * @param dfp              data file provider
-	 * @param levelClassName   name of the level class
-	 * @throws EngineException in case of errors while loading
-	 */
-	public void loadFromXML(String levelSetFileName, IDataFileProvider dfp, String levelClassName)
-			throws EngineException {
+    /**
+     * Load a game level set from a file.
+     * 
+     * @param levelSetFileName name of the level set file
+     * @param dfp data file provider
+     * @param levelClassName name of the level class
+     * @throws EngineException in case of errors while loading
+     */
+    public void loadFromXML(String levelSetFileName, IDataFileProvider dfp, String levelClassName)
+            throws EngineException {
 
-		try (InputStream is = dfp.getInputStream(levelSetFileName);) {
+        try (InputStream is = dfp.getInputStream(levelSetFileName);) {
 
-			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = db.parse(is);
+            DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = db.parse(is);
 
-			// Get the root level
-			Element root = doc.getDocumentElement();
+            // Get the root level
+            Element root = doc.getDocumentElement();
 
-			// Read the start level
-			startLevel = root.getAttribute("start");
-			if (StringUtils.isBlank(startLevel)) {
-				throw new EngineException("Unable to find the start level.");
-			}
+            // Read the start level
+            startLevel = root.getAttribute("start");
+            if (StringUtils.isBlank(startLevel)) {
+                throw new EngineException("Unable to find the start level.");
+            }
 
-			NodeList levelNodeList = root.getElementsByTagName("level");
-			Element levelElement;
-			Class<?> c = Class.forName(levelClassName);
+            NodeList levelNodeList = root.getElementsByTagName("level");
+            Element levelElement;
+            Class<?> c = Class.forName(levelClassName);
 
-			for (int nodeIndex = 0; nodeIndex < levelNodeList.getLength(); nodeIndex++) {
+            for (int nodeIndex = 0; nodeIndex < levelNodeList.getLength(); nodeIndex++) {
 
-				XmlGameLevel gameLevel = (XmlGameLevel) c.getDeclaredConstructor().newInstance();
+                XmlGameLevel gameLevel = (XmlGameLevel) c.getDeclaredConstructor().newInstance();
 
-				// Warning, the number of nodes is not the number of lines
+                // Warning, the number of nodes is not the number of lines
 
-				levelElement = (Element) levelNodeList.item(nodeIndex);
-				gameLevel.loadFromXml(levelElement);
+                levelElement = (Element) levelNodeList.item(nodeIndex);
+                gameLevel.loadFromXml(levelElement);
 
-				String levelID = gameLevel.getId();
-				LOG.info("Registering level " + levelID);
+                String levelId = gameLevel.getId();
+                LOG.info("Registering level " + levelId);
 
-				levels.put(levelID, gameLevel);
-			}
+                if (levels.containsKey(levelId)) {
+                    throw new EngineException("Duplicate level index found : " + levelId);
+                }
 
-		} catch (Exception e) {
-			LOG.error("Error while reading XML predefined level set : " + levelSetFileName, e);
-			throw new EngineException("Error while reading the XML level set " + levelSetFileName, e);
-		}
-		LOG.debug("Number of loaded levels : " + levels.size());
-	}
+                levels.put(levelId, gameLevel);
+            }
 
-	/**
-	 * Provides a requested level.
-	 * 
-	 * @param index the level index
-	 * @return the game level
-	 */
-	public XmlGameLevel getLevel(String index) {
-		return levels.get(index);
-	}
+        } catch (Exception e) {
+            LOG.error("Error while reading XML predefined level set : " + levelSetFileName, e);
+            throw new EngineException("Error while reading the XML level set " + levelSetFileName,
+                    e);
+        }
+        LOG.debug("Number of loaded levels : " + levels.size());
+    }
 
-	@Override
-	public XmlGameLevel getNextLevel(String index) {
+    /**
+     * Provides a requested level.
+     * 
+     * @param index the level index
+     * @return the game level
+     */
+    public XmlGameLevel getLevel(String index) {
+        return levels.get(index);
+    }
 
-		// If there is no current level, returns the start level
-		if (index.equals(ILevelManager.NO_LEVEL)) {
-			return getLevel(startLevel);
-		}
+    @Override
+    public XmlGameLevel getNextLevel(String index) {
 
-		// Return next level
-		// TODO Maybe improve here to allow conditional level changes (this could be a
-		// cool thing)
-		return getLevel(getLevel(index).getNextLevel());
-	}
+        // If there is no current level, returns the start level
+        if (index.equals(ILevelManager.NO_LEVEL)) {
+            return getLevel(startLevel);
+        }
 
-	@Override
-	public int getSize() {
-		return levels.size();
-	}
+        // Return next level
+        // TODO Maybe improve here to allow conditional level changes (this
+        // could be a cool thing)
+        return getLevel(getLevel(index).getNextLevel());
+    }
+
+    @Override
+    public int getSize() {
+        return levels.size();
+    }
 
 }
