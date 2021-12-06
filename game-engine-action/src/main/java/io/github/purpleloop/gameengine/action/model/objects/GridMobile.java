@@ -2,7 +2,7 @@ package io.github.purpleloop.gameengine.action.model.objects;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import io.github.purpleloop.commons.math.GeomUtils;
+import io.github.purpleloop.commons.math.geom.GeomUtils;
 import io.github.purpleloop.gameengine.core.util.Location;
 
 /**
