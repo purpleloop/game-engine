@@ -108,33 +108,26 @@ public class PredefinedXmlLevelSet implements ILevelManager {
         LOG.debug("Number of loaded levels : " + levels.size());
     }
 
-    /**
-     * Provides a requested level.
-     * 
-     * @param index the level index
-     * @return the game level
-     */
-    public XmlGameLevel getLevel(String index) {
-        return levels.get(index);
-    }
-
     @Override
-    public XmlGameLevel getNextLevel(String index) {
+    public XmlGameLevel getLevel(String levelId) throws EngineException {
+        XmlGameLevel level = levels.get(levelId);
 
-        // If there is no current level, returns the start level
-        if (index.equals(ILevelManager.NO_LEVEL)) {
-            return getLevel(startLevel);
+        if (level == null) {
+            throw new EngineException(
+                    "The level whith the requested id (" + levelId + ") does not exist");
         }
 
-        // Return next level
-        // TODO Maybe improve here to allow conditional level changes (this
-        // could be a cool thing)
-        return getLevel(getLevel(index).getNextLevel());
+        return level;
     }
 
     @Override
     public int getSize() {
         return levels.size();
+    }
+
+    @Override
+    public String getStartLevelId() {
+        return startLevel;
     }
 
 }

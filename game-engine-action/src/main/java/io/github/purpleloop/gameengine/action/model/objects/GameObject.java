@@ -7,6 +7,7 @@ import java.util.Random;
 
 import io.github.purpleloop.commons.direction.Direction;
 import io.github.purpleloop.gameengine.action.model.interfaces.IEnvironmentObjet;
+import io.github.purpleloop.gameengine.core.util.EngineException;
 
 /**
  * A game object is the base class for everything placed in a game environment.
@@ -112,7 +113,7 @@ public class GameObject implements IEnvironmentObjet {
 	}
 
 	@Override
-	public void evolve() {
+	public void evolve() throws EngineException {
 		// A default object does not evolve in any way.
 	}
 

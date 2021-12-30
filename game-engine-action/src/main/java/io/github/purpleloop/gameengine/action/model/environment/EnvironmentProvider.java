@@ -22,9 +22,6 @@ public class EnvironmentProvider {
 	/** The game engine holding the level manager and providing level resources. */
 	private IGameEngine gameEngine;
 
-	/** Current level id. */
-	protected String currentLevelIndex = ILevelManager.NO_LEVEL;
-
 	/**
 	 * Constructor of the environment provider.
 	 * 
@@ -45,7 +42,7 @@ public class EnvironmentProvider {
 	 * 
 	 * @throws EngineException in case of problem during initialization
 	 */
-	public ISessionEnvironment getEnvironmentForNextLevel(ISession session) throws EngineException {
+	public ISessionEnvironment getEnvironmentForLevel(ISession session) throws EngineException {
 
 		Class<?>[] paramClasses = new Class<?>[2];
 		paramClasses[0] = ISession.class;
@@ -53,9 +50,7 @@ public class EnvironmentProvider {
 
 		ILevelManager levelManager = gameEngine.getLevelManager();
 				
-		IGameLevel level = levelManager.getNextLevel(currentLevelIndex);
-		
-		currentLevelIndex = level.getId();
+		IGameLevel level = levelManager.getLevel(session.getTargetLevelId());
 		
 		LOG.debug("Initialization of game for the level : " + level.getId());
 

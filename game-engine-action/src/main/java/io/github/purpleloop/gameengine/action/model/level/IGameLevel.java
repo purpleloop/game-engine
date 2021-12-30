@@ -1,5 +1,7 @@
 package io.github.purpleloop.gameengine.action.model.level;
 
+import java.util.List;
+
 /**
  * Defines a game level.
  * 
@@ -9,5 +11,8 @@ public interface IGameLevel {
 
     /** @return the level id */
     String getId();
+    
+    /** @return links associated to this level */
+    List<LevelLink> getLinks();
 
 }

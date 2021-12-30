@@ -191,15 +191,35 @@ public abstract class AbstractCellObjectEnvironment extends AbstractObjectEnviro
     public abstract boolean isObjectAllowedAtCell(IEnvironmentObjet object, int cx, int cy);
 
     /**
-     * This method is called when an environment object reaches a given cell.
+     * Handles when an environment object reaches a given cell.
      * 
      * TODO : See if we can have a more event-driven approach here.
      * 
      * @param object the environment object
      * @param cx abscissa of the cell
      * @param cy ordinate of the cell
+     * @throws EngineException in case of errors
      */
-    public abstract void reachingCell(IEnvironmentObjet object, int cx, int cy);
+    public abstract void reachingCell(IEnvironmentObjet object, int cx, int cy)
+            throws EngineException;
+
+    /**
+     * Handles when an environment object reaches a given exit.
+     * 
+     * @param targetLevelId the target level id
+     * @param object the object that reaches the exit
+     */
+    public void reachExit(String targetLevelId, IEnvironmentObjet object) {
+    }
+
+    /**
+     * Handles when an environment object jumps to another location.
+     * 
+     * @param destinationLocation the target location
+     * @param object the object that jumps
+     */
+    public void locationJump(Location destinationLocation, IEnvironmentObjet object) {
+    }
 
     @Override
     public void dumpEnvironmentObjects() {

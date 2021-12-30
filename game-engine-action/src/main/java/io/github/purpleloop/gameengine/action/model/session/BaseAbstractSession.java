@@ -24,136 +24,176 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
  */
 public abstract class BaseAbstractSession implements ISession {
 
-	/** Class logger. */
-	public static final Log LOG = LogFactory.getLog(BaseAbstractSession.class);
+    /** Class logger. */
+    public static final Log LOG = LogFactory.getLog(BaseAbstractSession.class);
 
-	/** The game engine where the session runs. */
-	protected IGameEngine gameEngine;
+    /** The game engine where the session runs. */
+    protected IGameEngine gameEngine;
 
-	/** The level manager. */
-	protected ILevelManager levelManager;
+    /** The level manager. */
+    protected ILevelManager levelManager;
 
-	/** The environment provider. */
-	private EnvironmentProvider environmentProvider;
+    /** The environment provider. */
+    private EnvironmentProvider environmentProvider;
 
-	/** The current environment. */
-	protected ISessionEnvironment currentEnvironment;
+    /** The current environment. */
+    protected ISessionEnvironment currentEnvironment;
 
-	/** Should the level change on next update ? */
-	private boolean changeLevelOnNextupdate;
+    /** The current level id. */
+    protected String currentLevelId;
 
-	/** The players. */
-	protected List<IPlayer> players;
+    /** Should the level change on next update ? */
+    private boolean changeLevelOnNextupdate;
 
-	/**
-	 * Creates a game session.
-	 * 
-	 * @param gameEngine The game engine where the session occurs
-	 * @throws EngineException in case of problem
-	 */
-	public BaseAbstractSession(IGameEngine gameEngine) throws EngineException {
-		LOG.debug("Creating the game session");
-		this.gameEngine = gameEngine;
+    /**
+     * The target level id, if a level change occur. May be a specific level
+     * change class can be used here later ?
+     */
+    private String targetLevelId;
 
-		this.players = new ArrayList<IPlayer>();
+    /** The players. */
+    protected List<IPlayer> players;
 
-		// Initialize the game levels
-		levelManager = gameEngine.getLevelManager();
+    /**
+     * Creates a game session.
+     * 
+     * @param gameEngine The game engine where the session occurs
+     * @throws EngineException in case of problem
+     */
+    protected BaseAbstractSession(IGameEngine gameEngine) throws EngineException {
+        LOG.debug("Creating the game session");
+        this.gameEngine = gameEngine;
 
-		initSession();
+        this.players = new ArrayList<>();
 
-		environmentProvider = new EnvironmentProvider(gameEngine);
+        // Initialize the game levels
+        levelManager = gameEngine.getLevelManager();
 
-		setupNextLevel();
-	}
+        initSession(levelManager.getStartLevelId());
 
-	/** Tasks to be performed at the beginning of session. */
-	protected void initSession() {
-	}
+        environmentProvider = new EnvironmentProvider(gameEngine);
 
-	/** Cleans the current environment if it exists. */
-	private void cleanupCurrentEnvironment() {
+        setupLevel();
+    }
 
-		if (currentEnvironment != null) {
-			LOG.debug("Cleaning the current environment");
-			currentEnvironment.removeController(gameEngine.getController());
-			currentEnvironment.removeObserver(this);
-			currentEnvironment = null;
-		}
-	}
+    /** Common tasks to be performed at the beginning of session.
+     * @param levelId id of the level to initialize
+     */
+    protected final void initSession(String levelId) {
+        this.targetLevelId = levelId;
 
-	@Override
-	public final ISessionEnvironment getCurrentEnvironment() {
-		return currentEnvironment;
-	}
+        initSessionSpecific();
+    }
 
-	@Override
-	public final synchronized void update() throws EngineException {
+    /** Game specific tasks to be performed at the beginning of session. */
+    protected void initSessionSpecific() {
+    }
 
-		if (changeLevelOnNextupdate) {
-			setupNextLevel();
-			changeLevelOnNextupdate = false;
-		}
+    /** Cleans the current environment if it exists. */
+    private void cleanupCurrentEnvironment() {
 
-		updateSpecific();
-	}
+        if (currentEnvironment != null) {
+            LOG.debug("Cleaning the current environment");
+            currentEnvironment.removeController(gameEngine.getController());
+            currentEnvironment.removeObserver(this);
+            currentEnvironment = null;
+        }
+    }
 
-	/**
-	 * Specific updates of the session.
-	 * 
-	 * @throws EngineException in case of problem
-	 */
-	protected void updateSpecific() throws EngineException {
-		if (currentEnvironment != null) {
-			currentEnvironment.update();
-		}
-	}
+    @Override
+    public final ISessionEnvironment getCurrentEnvironment() {
+        return currentEnvironment;
+    }
 
-	@Override
-	public final IGameEngine getGameEngine() {
-		return gameEngine;
-	}
+    @Override
+    public final synchronized void update() throws EngineException {
 
-	/**
-	 * Prepare the environment for the next level.
-	 * 
-	 * @throws EngineException in case of problem
-	 */
-	private void setupNextLevel() throws EngineException {
-	
-		LOG.info("Setup next level");
-		cleanupCurrentEnvironment();
-		currentEnvironment = environmentProvider.getEnvironmentForNextLevel(this);
-		currentEnvironment.setController(gameEngine.getController());
-		currentEnvironment.addObserver(this);
-	}
+        if (changeLevelOnNextupdate) {
+            setupLevel();
+            changeLevelOnNextupdate = false;
+        }
 
-	@Override
-	public void cleanup() {
-		cleanupCurrentEnvironment();
-	}
+        updateSpecific();
+    }
 
-	/**
-	 * Asks for a change of level for the next update of the session.
-	 */
-	protected final void prepareLevelChange() {
+    /**
+     * Specific updates of the session.
+     * 
+     * @throws EngineException in case of problem
+     */
+    protected void updateSpecific() throws EngineException {
+        if (currentEnvironment != null) {
+            currentEnvironment.update();
+        }
+    }
 
-		LOG.debug("Prepare for level change ...");
-		changeLevelOnNextupdate = true;
-	}
+    @Override
+    public final IGameEngine getGameEngine() {
+        return gameEngine;
+    }
 
-	/**
-	 * Add a player to the session.
-	 * 
-	 * @param player the player to add
-	 */
-	protected void addPlayer(IPlayer player) {
-		LOG.debug("Adding player " + player);
-		players.add(player);
-	}
+    /**
+     * Prepare the environment for the given target level.
+     * 
+     * @throws EngineException in case of problem
+     */
+    private void setupLevel() throws EngineException {
 
-	@Override
-	public List<IPlayer> getPlayers() {
-		return players;
-	}
+        cleanupCurrentEnvironment();
+
+        LOG.info("Setup for target level " + targetLevelId);
+        currentEnvironment = environmentProvider.getEnvironmentForLevel(this);
+        currentLevelId = targetLevelId;
+        currentEnvironment.setController(gameEngine.getController());
+        currentEnvironment.addObserver(this);
+    }
+
+    /** @return the current level id */
+    public String getCurrentLevelId() {
+        return currentLevelId;
+    }
+
+    /** @param currentLevelId the current level id */
+    public void setCurrentLevelId(String currentLevelId) {
+        this.currentLevelId = currentLevelId;
+    }
+
+    /** @param targetLevelId target level id */
+    public void setTargetLevelId(String targetLevelId) {
+        this.targetLevelId = targetLevelId;
+    }
+
+    /** @return the target level id */
+    public String getTargetLevelId() {
+        return targetLevelId;
+    }
+
+    @Override
+    public void cleanup() {
+        cleanupCurrentEnvironment();
+    }
+
+    /**
+     * Asks for a change of level for the next update of the session.
+     */
+    protected final void prepareLevelChange() {
+
+        LOG.debug("Prepare for level change ...");
+        changeLevelOnNextupdate = true;
+    }
+
+    /**
+     * Add a player to the session.
+     * 
+     * @param player the player to add
+     */
+    protected void addPlayer(IPlayer player) {
+        LOG.debug("Adding player " + player);
+        players.add(player);
+    }
+
+    @Override
+    public List<IPlayer> getPlayers() {
+        return players;
+    }
 }
