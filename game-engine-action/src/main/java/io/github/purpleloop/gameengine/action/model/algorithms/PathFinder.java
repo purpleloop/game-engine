@@ -22,16 +22,16 @@ public class PathFinder {
     private static final int TARGET_VALUE = 9999;
 
     /** A value array, used to store the value of a given cell. */
-    private int[][] value;
+    protected int[][] value;
 
     /** Open locations (to explore). */
-    private List<Location> openLocations;
+    protected List<Location> openLocations;
 
     /** Closed locations (already explored). */
-    private List<Location> closedLocations;
+    protected List<Location> closedLocations;
 
     /** The environment, on which the path finding occurs. */
-    private AbstractCellObjectEnvironment environment;
+    protected AbstractCellObjectEnvironment environment;
 
     /** The width of the environment (in cells units). */
     private int cellWidth;
@@ -40,7 +40,7 @@ public class PathFinder {
     private int cellHeight;
 
     /** The object to move along the path. */
-    private IEnvironmentObjet object;
+    protected IEnvironmentObjet object;
 
     /**
      * Creates a new path finder for the given environment.

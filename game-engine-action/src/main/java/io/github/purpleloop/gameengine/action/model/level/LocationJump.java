@@ -25,6 +25,11 @@ public class LocationJump extends LocatedLevelLink {
         this.destinationLocation = destinationLocation;
     }
 
+    /** @return The destination location. */
+    public Location getDestinationLocation() {
+        return destinationLocation;
+    }
+
     @Override
     public void applyChanges(AbstractCellObjectEnvironment environment, GameObject object) {
         environment.locationJump(destinationLocation, object);
