@@ -18,6 +18,9 @@ public interface ISession extends IEnvironmentObserver {
     /** @return true if the session is ended, false otherwise. */
     boolean isEnded();
 
+    /** @return the session is currently in intermission mode */
+    boolean isIntermission();
+
     /**
      * @return the current environment of the session
      */

@@ -21,11 +21,16 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
  * 
  * A session spreads across several levels. For sake of simplicity, the current
  * level is the active environment and is unique at a given time.
+ * 
+ * An intermission occurs before each level.
  */
 public abstract class BaseAbstractSession implements ISession {
 
     /** Class logger. */
     public static final Log LOG = LogFactory.getLog(BaseAbstractSession.class);
+
+    /** Intermission length in milliseconds. */
+    private static final int INTERMISSION_LENGTH_MILLIS = 1000 * 5;
 
     /** The game engine where the session runs. */
     protected IGameEngine gameEngine;
@@ -43,7 +48,7 @@ public abstract class BaseAbstractSession implements ISession {
     protected String currentLevelId;
 
     /** Should the level change on next update ? */
-    private boolean changeLevelOnNextupdate;
+    private boolean changeLevelOnNextUpdate;
 
     /**
      * The target level id, if a level change occur. May be a specific level
@@ -53,6 +58,15 @@ public abstract class BaseAbstractSession implements ISession {
 
     /** The players. */
     protected List<IPlayer> players;
+
+    /**
+     * The intermission flag : set before a new level and for a time lapse given
+     * by [{@link #INTERMISSION_LENGTH_MILLIS}.
+     */
+    private boolean intermission;
+
+    /** Timer for the intermission end, when relevant. */
+    private long timerEndInterludeMillis;
 
     /**
      * Creates a game session.
@@ -73,10 +87,13 @@ public abstract class BaseAbstractSession implements ISession {
 
         environmentProvider = new EnvironmentProvider(gameEngine);
 
-        setupLevel();
+        // Prepare the first level
+        changeLevelOnNextUpdate = true;
     }
 
-    /** Common tasks to be performed at the beginning of session.
+    /**
+     * Common tasks to be performed at the beginning of session.
+     * 
      * @param levelId id of the level to initialize
      */
     protected final void initSession(String levelId) {
@@ -108,12 +125,32 @@ public abstract class BaseAbstractSession implements ISession {
     @Override
     public final synchronized void update() throws EngineException {
 
-        if (changeLevelOnNextupdate) {
+        if (changeLevelOnNextUpdate) {
+
+            changeLevelOnNextUpdate = false;
+
+            cleanupCurrentEnvironment();
+
+            LOG.debug("Intermission started.");
+            timerEndInterludeMillis = System.currentTimeMillis() + INTERMISSION_LENGTH_MILLIS;
+
+            setupIntermissionSpecific();
+            intermission = true;
+
+        } else if (intermission && System.currentTimeMillis() > timerEndInterludeMillis) {
+
+            LOG.debug("Intermission has ended.");
+            intermission = false;
+
             setupLevel();
-            changeLevelOnNextupdate = false;
         }
 
         updateSpecific();
+
+    }
+
+    /** Specific actions to do for intermission (for instance, play a sound). */
+    protected void setupIntermissionSpecific() {
     }
 
     /**
@@ -138,8 +175,6 @@ public abstract class BaseAbstractSession implements ISession {
      * @throws EngineException in case of problem
      */
     private void setupLevel() throws EngineException {
-
-        cleanupCurrentEnvironment();
 
         LOG.info("Setup for target level " + targetLevelId);
         currentEnvironment = environmentProvider.getEnvironmentForLevel(this);
@@ -179,7 +214,12 @@ public abstract class BaseAbstractSession implements ISession {
     protected final void prepareLevelChange() {
 
         LOG.debug("Prepare for level change ...");
-        changeLevelOnNextupdate = true;
+        changeLevelOnNextUpdate = true;
+    }
+
+    @Override
+    public boolean isIntermission() {
+        return intermission;
     }
 
     /**
