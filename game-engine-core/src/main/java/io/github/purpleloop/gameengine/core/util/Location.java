@@ -130,6 +130,7 @@ public final class Location {
     /**
      * Creates a canonical location for the given hashcode.
      * 
+     * @param hashCode the hashcode
      * @return the canonical location derived from the hashcode
      */
     private static Location createFor(int hashCode) {

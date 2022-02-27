@@ -20,20 +20,22 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>io.github.purpleloop</groupId>
+			<artifactId>purple-commons</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-		    <groupId>io.github.purpleloop</groupId>
-		    <artifactId>purple-commons</artifactId>
-		    <version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		
+
 		<!-- Dependency on Swing tools (mainly for image utilities) -->
 		<dependency>
-		    <groupId>io.github.purpleloop</groupId>
-		    <artifactId>purple-commons-swing</artifactId>
-		    <version>1.0.0-SNAPSHOT</version>
+			<groupId>io.github.purpleloop</groupId>
+			<artifactId>purple-commons-swing</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Tests -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
 		</dependency>
 
 	</dependencies>

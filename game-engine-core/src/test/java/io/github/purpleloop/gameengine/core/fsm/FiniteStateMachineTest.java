@@ -1,10 +1,9 @@
 package io.github.purpleloop.gameengine.core.fsm;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests on finite states machines (FSM).
@@ -17,27 +16,18 @@ import org.junit.Test;
  * </p>
  * 
  */
-public class FiniteStateMachineTest {
-
-    /** Logger of the class. */
-    private static final Log LOG = LogFactory.getLog(FiniteStateMachineTest.class);
+class FiniteStateMachineTest {
 
     enum LightState implements MachineState {
 
         /** FSM test state - The cord is unplugged. */
-        UNPLUGGED("Power cord is unplugged"),
+        UNPLUGGED,
 
         /** FSM test state - The light is on. */
-        ON("Light is on"),
+        ON,
 
         /** FSM test state - the light is off. */
-        OFF("Light is off");
-
-        private String description;
-
-        LightState(String description) {
-            this.description = description;
-        }
+        OFF;
     }
 
     enum LightFact implements MachineFact {
@@ -56,9 +46,34 @@ public class FiniteStateMachineTest {
 
     }
 
+    /** Test on new transition - Unknown initial state. */
+    @Test
+    void testTransitionFromUnknownStateThrowsIllegalArgumentException() {
+
+        FiniteStateMachine lightFsm = new FiniteStateMachine();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            lightFsm.newTransition(LightState.OFF, LightState.ON, LightFact.SWITCH_ON);
+        });
+
+    }
+
+    /** Test on new transition - Unknown final state. */
+    @Test
+    void testTransitionToUnknownStateThrowsIllegalArgumentException() {
+
+        FiniteStateMachine lightFsm = new FiniteStateMachine();
+        lightFsm.newState(LightState.OFF);
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            lightFsm.newTransition(LightState.OFF, LightState.ON, LightFact.SWITCH_ON);
+        });
+
+    }
+    
     /** Tests a valid transition - Plug the power cord. */
     @Test
-    public void testTransitionAppliesPlugCord() {
+    void testTransitionAppliesPlugCord() {
 
         FiniteStateMachine lightFsm = createFsm(LightState.UNPLUGGED);
 
@@ -69,7 +84,7 @@ public class FiniteStateMachineTest {
 
     /** Tests a valid transition - Unplug the power cord. */
     @Test
-    public void testTransitionAppliesUnPlugCord() {
+    void testTransitionAppliesUnPlugCord() {
 
         FiniteStateMachine lightFsm = createFsm(LightState.OFF);
         lightFsm.addFact(LightFact.UNPLUG);
@@ -79,7 +94,7 @@ public class FiniteStateMachineTest {
 
     /** Tests a valid transition - Turn on the light. */
     @Test
-    public void testTransitionAppliesSwitchOn() {
+    void testTransitionAppliesSwitchOn() {
 
         FiniteStateMachine lightFsm = createFsm(LightState.OFF);
 
@@ -90,7 +105,7 @@ public class FiniteStateMachineTest {
 
     /** Tests a valid transition - Turn off the light. */
     @Test
-    public void testTransitionAppliesSwitchOff() {
+    void testTransitionAppliesSwitchOff() {
 
         FiniteStateMachine lightFsm = createFsm(LightState.ON);
 
@@ -101,18 +116,18 @@ public class FiniteStateMachineTest {
 
     /** Tests a invalid transition - Can's turn off the light (twice). */
     @Test
-    public void testTransitionDoesNotApplySwitchOff() {
+    void testTransitionDoesNotApplySwitchOff() {
 
         FiniteStateMachine lightFsm = createFsm(LightState.OFF);
 
         lightFsm.addFact(LightFact.SWITCH_OFF);
         lightFsm.process();
         assertTrue(lightFsm.isInState(LightState.OFF));
-    }    
-    
+    }
+
     /** Tests a complete cycle. */
     @Test
-    public void testCompleteCycle() {
+    void testCompleteCycle() {
 
         FiniteStateMachine lightFsm = createFsm(LightState.UNPLUGGED);
 

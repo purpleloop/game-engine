@@ -17,6 +17,7 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<junit.version>5.8.2</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -48,26 +49,25 @@
 				<artifactId>commons-lang3</artifactId>
 				<version>3.8.1</version>
 			</dependency>
+
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.12</version>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
 	<modules>
-		<module>game-engine-core</module>		
-     	<module>game-engine-sound</module>     	      
-        <module>game-engine-network</module>
+		<module>game-engine-core</module>
+		<module>game-engine-sound</module>
+		<module>game-engine-network</module>
 		<module>game-engine-action</module>
 		<module>game-engine-action-swing</module>
 		<module>game-engine-board</module>
 		<module>game-engine-board-swing</module>
-		<!-- 
-		teaser : soon available ...
-		<module>game-engine-workshop</module>
-		-->
+		<!-- teaser : soon available ... <module>game-engine-workshop</module> -->
 	</modules>
 </project>

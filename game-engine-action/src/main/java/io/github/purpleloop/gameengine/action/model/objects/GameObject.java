@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.github.purpleloop.commons.direction.Direction;
 import io.github.purpleloop.gameengine.action.model.interfaces.IEnvironmentObjet;
 import io.github.purpleloop.gameengine.core.util.EngineException;
@@ -167,5 +169,10 @@ public class GameObject implements IEnvironmentObjet {
 	public IAppearance getAppearance() {
 		return DEFAULT_APPAREANCE;
 	}
+
+    @Override
+    public String getExtraDebugInfo() {
+        return StringUtils.EMPTY;
+    }
 
 }

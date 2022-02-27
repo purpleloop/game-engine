@@ -19,6 +19,8 @@ import org.apache.commons.logging.LogFactory;
  * be not enough for complex agents that would require knowledge inference, or
  * probabilistic computations, for instance.
  * </p>
+ * 
+ * TODO Separate the FSM model of from possible multiple instances.
  */
 public class FiniteStateMachine {
 
@@ -61,16 +63,16 @@ public class FiniteStateMachine {
      * Creates a new transition from a state to another one, on a specific guard
      * condition.
      * 
-     * @param initialStateName the name of the initial state for the transition
-     * @param finalStateName the name of the final state for the transition
+     * @param initialState the name of the initial state for the transition
+     * @param finalState the name of the final state for the transition
      * @param guardFact the fact that need to be present to trigger the
      *            transition
      */
-    public void newTransition(MachineState initialStateName, MachineState finalStateName,
+    public void newTransition(MachineState initialState, MachineState finalState,
             MachineFact guardFact) {
 
-        FSMNode sourceNode = nodeBindings.get(initialStateName);
-        FSMNode targetNode = nodeBindings.get(finalStateName);
+        FSMNode sourceNode = getNode(initialState);
+        FSMNode targetNode = getNode(finalState);
         sourceNode.addTransition(guardFact, targetNode);
     }
 
@@ -96,11 +98,18 @@ public class FiniteStateMachine {
     /**
      * Get a FSM node from the given state.
      * 
-     * @param state the requested state
+     * @param requestedState the requested state
      * @return the requested fsmNode
      */
     private FSMNode getNode(MachineState requestedState) {
-        return nodeBindings.get(requestedState);
+
+        FSMNode requestedNode = nodeBindings.get(requestedState);
+
+        if (requestedNode == null) {
+            throw new IllegalArgumentException("State " + requestedNode + " is not defined.");
+        }
+
+        return requestedNode;
     }
 
     /**
@@ -132,6 +141,10 @@ public class FiniteStateMachine {
                         + newNode.getState());
 
                 currentFacts.remove(testedFact);
+
+                if (!currentFacts.isEmpty()) {
+                    LOG.debug("remaining facts " + currentFacts);
+                }
 
             }
 

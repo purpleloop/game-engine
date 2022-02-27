@@ -89,4 +89,7 @@ public interface IEnvironmentObjet {
     /** @return the object appearance */
     IAppearance getAppearance();
 
+    /** @return a string usable for debugging purpose */
+    String getExtraDebugInfo();
+
 }
