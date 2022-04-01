@@ -73,4 +73,7 @@ public interface IGameEngine extends IRootGameEngine  {
 
 	/** @return the level manager */
 	ILevelManager getLevelManager();
+
+	/** @return the optional dialogEngine */
+    Optional<IDialogEngine> getDialogEngine();
 }

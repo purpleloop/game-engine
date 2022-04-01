@@ -1,8 +1,9 @@
 /** The action game module. */
 module io.github.purpleloop.gameengine.action {
-	
+
 	exports io.github.purpleloop.gameengine.action.model.actions;
 	exports io.github.purpleloop.gameengine.action.model.algorithms;
+	exports io.github.purpleloop.gameengine.action.model.dialog;
 	exports io.github.purpleloop.gameengine.action.model.environment;
     exports io.github.purpleloop.gameengine.action.model.interfaces;
     exports io.github.purpleloop.gameengine.action.model.events; 

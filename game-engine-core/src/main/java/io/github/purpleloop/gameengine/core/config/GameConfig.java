@@ -27,280 +27,310 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
  */
 public class GameConfig implements ISoundFileResolver {
 
-	/** Class logger. */
-	private static Log log = LogFactory.getLog(GameConfig.class);
+    /** Class logger. */
+    private static Log log = LogFactory.getLog(GameConfig.class);
 
-	/** Path to images files. */
-	private static final String IMAGE_PATH = "media/images/";
+    /** Path to images files. */
+    private static final String IMAGE_PATH = "media/images/";
 
-	/** Path to sound files. */
-	private static final String SOUND_PATH = "media/sounds/";
+    /** Path to sound files. */
+    private static final String SOUND_PATH = "media/sounds/";
 
-	/** Map of the image files. */
-	private Map<String, String> imageFiles;
+    /** Map of the image files. */
+    private Map<String, String> imageFiles;
 
-	/** Map of the sound files. */
-	private Map<String, String> soundFiles;
+    /** Map of the sound files. */
+    private Map<String, String> soundFiles;
 
-	/** Map of keyboard actions. */
-	private KeyBoardActionMap keyMap;
+    /** Map of keyboard actions. */
+    private KeyBoardActionMap keyMap;
 
-	/** Class names per role. */
-	private Map<ClassRole, String> classes;
+    /** Class names per role. */
+    private Map<ClassRole, String> classes;
 
-	/** Additional configuration properties. */
-	private Properties properties;
+    /** Additional configuration properties. */
+    private Properties properties;
 
-	/** Constructor for the game engine configuration. */
-	public GameConfig() {
-		super();
+    /** Constructor for the game engine configuration. */
+    public GameConfig() {
+        super();
 
-		log.info("Creating a new game engine configuration");
+        log.info("Creating a new game engine configuration");
 
-		soundFiles = new HashMap<>();
-		imageFiles = new HashMap<>();
+        soundFiles = new HashMap<>();
+        imageFiles = new HashMap<>();
 
-		keyMap = new KeyBoardActionMap();
+        keyMap = new KeyBoardActionMap();
 
-		classes = new EnumMap<>(ClassRole.class);
-		properties = new Properties();
-	}
+        classes = new EnumMap<>(ClassRole.class);
+        properties = new Properties();
+    }
 
-	/**
-	 * Reads and builds the configuration of the game engine from a file.
-	 * 
-	 * @param dfp            data file provider
-	 * @param configFileName name of the game engine configuration file
-	 * @return game engine configuration
-	 * @throws EngineException in case of problem
-	 */
-	public static synchronized GameConfig parse(IDataFileProvider dfp, String configFileName) throws EngineException {
+    /**
+     * Reads and builds the configuration of the game engine from a file.
+     * 
+     * @param dfp data file provider
+     * @param configFileName name of the game engine configuration file
+     * @return game engine configuration
+     * @throws EngineException in case of problem
+     */
+    public static synchronized GameConfig parse(IDataFileProvider dfp, String configFileName)
+            throws EngineException {
 
-		log.info("Reading the configuration file : " + configFileName);
+        log.info("Reading the configuration file : " + configFileName);
 
-		InputStream is = dfp.getInputStream(configFileName);
+        InputStream is = dfp.getInputStream(configFileName);
 
-		GameConfig createdGameConfig = new GameConfig();
+        GameConfig createdGameConfig = new GameConfig();
 
-		Document doc;
-		try {
-			doc = XMLTools.getDocument(is);
-		} catch (PurpleException e1) {
-			log.error("An error occured while reading the game engine configuration file " + configFileName, e1);
-			throw new EngineException("The reading of the game engine configuration fil has failed.");
-		}
+        Document doc;
+        try {
+            doc = XMLTools.getDocument(is);
+        } catch (PurpleException e1) {
+            log.error("An error occured while reading the game engine configuration file "
+                    + configFileName, e1);
+            throw new EngineException(
+                    "The reading of the game engine configuration fil has failed.");
+        }
 
-		Element root = doc.getDocumentElement();
+        Element root = doc.getDocumentElement();
 
-		parseProperties(createdGameConfig, root);
+        parseProperties(createdGameConfig, root);
 
-		parseClasses(createdGameConfig, root);
+        parseClasses(createdGameConfig, root);
 
-		parseKeymap(createdGameConfig, root);
+        parseKeymap(createdGameConfig, root);
 
-		for (Element elementImage : XMLTools.getChildElements(root, "image")) {
-			String name = elementImage.getAttribute("name");
-			String location = elementImage.getAttribute("location");
-			createdGameConfig.addImage(name, location);
-		}
+        for (Element elementImage : XMLTools.getChildElements(root, "image")) {
+            String name = elementImage.getAttribute("name");
+            String location = elementImage.getAttribute("location");
+            createdGameConfig.addImage(name, location);
+        }
 
-		for (Element elementSound : XMLTools.getChildElements(root, "sound")) {
-			String name = elementSound.getAttribute("name");
-			String location = elementSound.getAttribute("location");
-			createdGameConfig.addSound(name, location);
-		}
+        for (Element elementSound : XMLTools.getChildElements(root, "sound")) {
+            String name = elementSound.getAttribute("name");
+            String location = elementSound.getAttribute("location");
+            createdGameConfig.addSound(name, location);
+        }
 
-		return createdGameConfig;
-	}
+        return createdGameConfig;
+    }
 
-	/**
-	 * Parse specific game properties.
-	 * 
-	 * @param gameConfig the game configuration
-	 * @param element    XML element where to read properties
-	 * @throws EngineException in case of errors
-	 */
-	private static void parseProperties(GameConfig gameConfig, Element element) throws EngineException {
+    /**
+     * Parse specific game properties.
+     * 
+     * @param gameConfig the game configuration
+     * @param element XML element where to read properties
+     * @throws EngineException in case of errors
+     */
+    private static void parseProperties(GameConfig gameConfig, Element element)
+            throws EngineException {
 
-		try {
-			Optional<Element> propertiesElementOptional = XMLTools.getUniqueElement(element, "properties");
+        try {
+            Optional<Element> propertiesElementOptional = XMLTools.getUniqueElement(element,
+                    "properties");
 
-			if (propertiesElementOptional.isPresent()) {
+            if (propertiesElementOptional.isPresent()) {
 
-				Element propertiesElement = propertiesElementOptional.get();
+                Element propertiesElement = propertiesElementOptional.get();
 
-				log.debug("Configuring specific properties");
+                log.debug("Configuring specific properties");
 
-				for (Element elementClasse : XMLTools.getChildElements(propertiesElement, "property")) {
-					String propertyName = elementClasse.getAttribute("name");
+                for (Element elementClasse : XMLTools.getChildElements(propertiesElement,
+                        "property")) {
+                    String propertyName = elementClasse.getAttribute("name");
 
-					if (propertyName == null) {
-						throw new EngineException("Missing property name in configuration");
-					}
+                    if (propertyName == null) {
+                        throw new EngineException("Missing property name in configuration");
+                    }
 
-					String propertyValue = elementClasse.getAttribute("value");
+                    String propertyValue = elementClasse.getAttribute("value");
 
-					if (StringUtils.isEmpty(propertyValue)) {
-						throw new EngineException("Missing value for property " + propertyName + ".");
-					}
+                    if (StringUtils.isEmpty(propertyValue)) {
+                        throw new EngineException(
+                                "Missing value for property " + propertyName + ".");
+                    }
 
-					log.debug("Property " + propertyName + " -> " + propertyValue);
+                    log.debug("Property " + propertyName + " -> " + propertyValue);
 
-					gameConfig.setProperty(propertyName, propertyValue);
-				}
-			}
+                    gameConfig.setProperty(propertyName, propertyValue);
+                }
+            }
 
-		} catch (PurpleException e) {
-			log.error("XML error while reading game properties", e);
-			throw new EngineException(e.getMessage(), e);
-		}
+        } catch (PurpleException e) {
+            log.error("XML error while reading game properties", e);
+            throw new EngineException(e.getMessage(), e);
+        }
 
-	}
+    }
 
-	/**
-	 * Parse game classes.
-	 * 
-	 * @param gameConfig the game configuration
-	 * @param element    XML element where to read properties
-	 * @throws EngineException in case of errors
-	 */
-	private static void parseClasses(GameConfig gameConfig, Element element) throws EngineException {
-		for (Element elementClasse : XMLTools.getChildElements(element, "class")) {
-			String role = elementClasse.getAttribute("role");
+    /**
+     * Parse game classes.
+     * 
+     * @param gameConfig the game configuration
+     * @param element XML element where to read properties
+     * @throws EngineException in case of errors
+     */
+    private static void parseClasses(GameConfig gameConfig, Element element)
+            throws EngineException {
+        for (Element elementClasse : XMLTools.getChildElements(element, "class")) {
+            String role = elementClasse.getAttribute("role");
 
-			if (StringUtils.isEmpty(role)) {
-				throw new EngineException("The name of the role is missing.");
-			}
+            if (StringUtils.isEmpty(role)) {
+                throw new EngineException("The name of the role is missing.");
+            }
 
-			String name = elementClasse.getAttribute("classname");
+            String name = elementClasse.getAttribute("classname");
 
-			if (StringUtils.isEmpty(name)) {
-				throw new EngineException("The name of the class for the role " + role + " is missing.");
-			}
+            if (StringUtils.isEmpty(name)) {
+                throw new EngineException(
+                        "The name of the class for the role " + role + " is missing.");
+            }
 
-			gameConfig.addClass(ClassRole.valueOf(StringUtils.upperCase(role)), name);
-		}
-	}
+            gameConfig.addClass(ClassRole.valueOf(StringUtils.upperCase(role)), name);
+        }
+    }
 
-	/**
-	 * Parse game keyboard map.
-	 * 
-	 * @param gameConfig the game configuration
-	 * @param element    XML element where to read properties
-	 */
-	private static void parseKeymap(GameConfig gameConfig, Element element) {
-		gameConfig.keyMap.fillFromElement(XMLTools.getChildElements(element, "keymap"));
-	}
+    /**
+     * Parse game keyboard map.
+     * 
+     * @param gameConfig the game configuration
+     * @param element XML element where to read properties
+     */
+    private static void parseKeymap(GameConfig gameConfig, Element element) {
+        gameConfig.keyMap.fillFromElement(XMLTools.getChildElements(element, "keymap"));
+    }
 
-	/**
-	 * Sets a property.
-	 * 
-	 * @param propertyName  property name
-	 * @param propertyValue property value
-	 */
-	private void setProperty(String propertyName, String propertyValue) {
-		this.properties.setProperty(propertyName, propertyValue);
-	}
+    /**
+     * Sets a property.
+     * 
+     * @param propertyName property name
+     * @param propertyValue property value
+     */
+    private void setProperty(String propertyName, String propertyValue) {
+        this.properties.setProperty(propertyName, propertyValue);
+    }
 
-	/**
-	 * Registers a class name for a given role in the game engine.
-	 * 
-	 * @param role role name
-	 * @param name class name
-	 */
-	private void addClass(ClassRole role, String name) {
-		classes.put(role, name);
-	}
+    /**
+     * Registers a class name for a given role in the game engine.
+     * 
+     * @param role role name
+     * @param name class name
+     */
+    private void addClass(ClassRole role, String name) {
+        classes.put(role, name);
+    }
 
-	/**
-	 * Add an image to the engine.
-	 * 
-	 * @param name     the image name
-	 * @param location the image file location (relative to
-	 *                 {@link GameConfig#IMAGE_PATH}).
-	 */
-	public void addImage(String name, String location) {
-		imageFiles.put(name, IMAGE_PATH + location);
-	}
+    /**
+     * Add an image to the engine.
+     * 
+     * @param name the image name
+     * @param location the image file location (relative to
+     *            {@link GameConfig#IMAGE_PATH}).
+     */
+    public void addImage(String name, String location) {
+        imageFiles.put(name, IMAGE_PATH + location);
+    }
 
-	/**
-	 * Add an sound to the engine.
-	 * 
-	 * @param name     the sound name
-	 * @param location the sound file location (relative to
-	 *                 {@link GameConfig#SOUND_PATH}).
-	 */
-	public void addSound(String name, String location) {
-		soundFiles.put(name, SOUND_PATH + location);
-	}
+    /**
+     * Add an sound to the engine.
+     * 
+     * @param name the sound name
+     * @param location the sound file location (relative to
+     *            {@link GameConfig#SOUND_PATH}).
+     */
+    public void addSound(String name, String location) {
+        soundFiles.put(name, SOUND_PATH + location);
+    }
 
-	/**
-	 * Obtain the image for a given image name.
-	 * 
-	 * @param dataFileProvider the data file provider
-	 * @param imageName        the image name
-	 * @return the requested image
-	 * @throws EngineException in case of problems
-	 */
-	public Image getImage(IDataFileProvider dataFileProvider, String imageName) throws EngineException {
-		return dataFileProvider.getImage(imageFiles.get(imageName));
-	}
+    /**
+     * Obtain the image for a given image name.
+     * 
+     * @param dataFileProvider the data file provider
+     * @param imageName the image name
+     * @return the requested image
+     * @throws EngineException in case of problems
+     */
+    public Image getImage(IDataFileProvider dataFileProvider, String imageName)
+            throws EngineException {
+        return dataFileProvider.getImage(imageFiles.get(imageName));
+    }
 
-	@Override
-	public String getSoundFileName(String soundName) {
-		return soundFiles.get(soundName);
-	}
+    @Override
+    public String getSoundFileName(String soundName) {
+        return soundFiles.get(soundName);
+    }
 
-	/**
-	 * Get the class name for a given role.
-	 * 
-	 * @param role class role
-	 * @return class name
-	 * @throws EngineException in case of error
-	 */
-	public String getClassName(ClassRole role) throws EngineException {
+    /**
+     * Get the class name for a given role.
+     * 
+     * @param role class role
+     * @return class name
+     * @throws EngineException in case of error
+     */
+    public String getClassName(ClassRole role) throws EngineException {
 
-		String roleName = classes.get(role);
+        String roleName = classes.get(role);
 
-		if (StringUtils.isEmpty(roleName)) {
-			throw new EngineException("The name of the class to load for the role " + role
-					+ " is missing in the game engine configuration.");
-		}
+        if (StringUtils.isEmpty(roleName)) {
+            throw new EngineException("The name of the class to load for the role " + role
+                    + " is missing in the game engine configuration.");
+        }
 
-		return classes.get(role);
-	}
+        return classes.get(role);
+    }
 
-	/**
-	 * Get an integer property.
-	 * 
-	 * @param propertyName the name of the property
-	 * @return the integer property value
-	 * @throws EngineException in case of error on the property
-	 */
-	public int getIntProperty(String propertyName) throws EngineException {
+    /**
+     * Get an optional class name for an optional given role.
+     * 
+     * @param role class role
+     * @return optional class name
+     * @throws EngineException in case of error
+     */
+    public Optional<String> getOptionalClassName(ClassRole role) throws EngineException {
 
-		String strValue = getProperty(propertyName);
+        String roleName = classes.get(role);
 
-		if (strValue == null) {
-			throw new EngineException("The value of the property " + propertyName + " must be an integer.");
-		}
+        if (StringUtils.isEmpty(roleName)) {
+            log.debug("No class found for role " + roleName);
+            return Optional.empty();
+        }
 
-		return Integer.parseInt(strValue);
-	}
+        return Optional.of(classes.get(role));
+    }
 
-	/**
-	 * Get an property value.
-	 * 
-	 * @param propertyName the name of the property
-	 * @return the property value
-	 */
-	public String getProperty(String propertyName) {
-		return this.properties.getProperty(propertyName);
-	}
+    /**
+     * Get an integer property.
+     * 
+     * @param propertyName the name of the property
+     * @return the integer property value
+     * @throws EngineException in case of error on the property
+     */
+    public int getIntProperty(String propertyName) throws EngineException {
 
-	/** @return the keyboard mappings */
-	public KeyBoardActionMap getKeyMap() {
-		return keyMap;
-	}
+        String strValue = getProperty(propertyName);
+
+        if (strValue == null) {
+            throw new EngineException(
+                    "The value of the property " + propertyName + " must be an integer.");
+        }
+
+        return Integer.parseInt(strValue);
+    }
+
+    /**
+     * Get an property value.
+     * 
+     * @param propertyName the name of the property
+     * @return the property value
+     */
+    public String getProperty(String propertyName) {
+        return this.properties.getProperty(propertyName);
+    }
+
+    /** @return the keyboard mappings */
+    public KeyBoardActionMap getKeyMap() {
+        return keyMap;
+    }
 
 }

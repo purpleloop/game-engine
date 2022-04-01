@@ -148,7 +148,8 @@ public class KeyboardController implements KeyListener, IController {
 
 	@Override
 	public void unRegisterControlListener(IControllable controllable) {
-		LOG.debug("Unregistering controlable : " + controllable);
+		LOG.debug("Unregistering controlable : " + controllable);	
+		controllable.drainActions();
 		controlled.removeAll(controllable);
 	}
 

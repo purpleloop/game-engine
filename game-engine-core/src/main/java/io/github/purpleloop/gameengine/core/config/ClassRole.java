@@ -26,6 +26,9 @@ public enum ClassRole {
     /** Role of a class implementing a controller in the model. */
     CONTROLLER,
 
+    /** Role of a class implementing a dialog engine. */
+    DIALOG_ENGINE,
+
     // --- Board games ------------------------------------------------
     
     /** Role of a class implementing the board in the model. */
@@ -35,5 +38,5 @@ public enum ClassRole {
     
     /** Role of a class implementing the message factory. */
     MESSAGE_FACTORY;
-	
+    	
 }

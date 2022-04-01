@@ -2,11 +2,12 @@ package io.github.purpleloop.gameengine.action.model.interfaces;
 
 import java.util.List;
 
+import io.github.purpleloop.gameengine.action.model.dialog.DialogObserver;
 import io.github.purpleloop.gameengine.action.model.events.IGameEvent;
 import io.github.purpleloop.gameengine.core.util.EngineException;
 
 /** Models a session of the game. */
-public interface ISession extends IEnvironmentObserver {
+public interface ISession extends IEnvironmentObserver, DialogObserver {
 
     /**
      * Updates the session by one unit of time (frame).

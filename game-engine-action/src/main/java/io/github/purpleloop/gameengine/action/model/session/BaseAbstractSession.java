@@ -2,11 +2,14 @@ package io.github.purpleloop.gameengine.action.model.session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import io.github.purpleloop.gameengine.action.model.dialog.DialogController;
 import io.github.purpleloop.gameengine.action.model.environment.EnvironmentProvider;
+import io.github.purpleloop.gameengine.action.model.interfaces.IDialogEngine;
 import io.github.purpleloop.gameengine.action.model.interfaces.IGameEngine;
 import io.github.purpleloop.gameengine.action.model.interfaces.IPlayer;
 import io.github.purpleloop.gameengine.action.model.interfaces.ISession;
@@ -144,9 +147,17 @@ public abstract class BaseAbstractSession implements ISession {
 
             setupLevel();
         }
-
+        
+        Optional<IDialogEngine> dialogEngineOptional = gameEngine.getDialogEngine();
+        if (dialogEngineOptional.isPresent()) {
+            DialogController dialogController = dialogEngineOptional.get().getDialogController();
+            if (dialogController.hasDialogInProgress()) {
+                dialogController.update();
+                return;
+            }
+        }
+        
         updateSpecific();
-
     }
 
     /** Specific actions to do for intermission (for instance, play a sound). */
@@ -235,5 +246,9 @@ public abstract class BaseAbstractSession implements ISession {
     @Override
     public List<IPlayer> getPlayers() {
         return players;
+    }
+
+    @Override
+    public void dialogChanged(int dialogEvent) {
     }
 }
