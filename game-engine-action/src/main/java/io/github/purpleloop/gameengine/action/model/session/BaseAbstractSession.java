@@ -219,6 +219,13 @@ public abstract class BaseAbstractSession implements ISession {
     @Override
     public void cleanup() {
         cleanupCurrentEnvironment();
+
+        Optional<IDialogEngine> dialogEngineOptional = gameEngine.getDialogEngine();
+        if (dialogEngineOptional.isPresent()) {
+            DialogController dialogController = dialogEngineOptional.get().getDialogController();
+            dialogController.cleanup();
+        }
+
     }
 
     /**

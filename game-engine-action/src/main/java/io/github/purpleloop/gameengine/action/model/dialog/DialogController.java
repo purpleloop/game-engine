@@ -26,6 +26,9 @@ public class DialogController implements IDialogController {
     /** User action for going down to the next answer. */
     private static final String DIALOG_DOWN = "down";
 
+    /** The default choice. */
+    private static final int DEFAULT_CHOICE = 0;
+
     /** The current dialog. */
     private Dialog currentDialog;
 
@@ -33,7 +36,7 @@ public class DialogController implements IDialogController {
     private DialogNode currentDialogNode;
 
     /** Current user choice index. */
-    private int currentChoice = 0;
+    private int currentChoice = DEFAULT_CHOICE;
 
     /** Actions performed on the dialog. */
     private IActionStore actionStore;
@@ -126,6 +129,7 @@ public class DialogController implements IDialogController {
                 currentDialog = null;
             } else {
                 currentDialogNode = currentDialog.getNode(outcome);
+                currentChoice = DEFAULT_CHOICE;
             }
 
         }
@@ -154,12 +158,19 @@ public class DialogController implements IDialogController {
 
         if (currentDialog != null) {
             currentDialogNode = currentDialog.getNode(START_ID);
+            currentChoice = DEFAULT_CHOICE;
         }
     }
 
     /** @return true if there is a dialog in progress, false otherwise */
     public boolean hasDialogInProgress() {
         return currentDialog != null;
+    }
+
+    /** Cleans the controller. */
+    public void cleanup() {
+        setUpDialog(null);
+        observers.clear();
     }
 
 }
