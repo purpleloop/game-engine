@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<spritesdesc>
-    <sourceImage path="witch-fantasy-sprites.gif" />
+<spriteSet nextId="1">
+  <properties></properties>
+    <sourceImage path="witch-fantasy-sprites.gif" pathMode="RELATIVE" />
     <indexes>
-        <gridIndex spritesPerLine="4" lines="5" sx="0" sy="0" ugx="16" ugy="16" paddingX="0" paddingY="0" />
+        <gridIndex id="0" sx="0" sy="0" numColumns="4" numRows="5" cellWidth="40" cellHeight="40" hSpacing="0" vSpacing="0" />
     </indexes>
-</spritesdesc>
+</spriteSet>

@@ -6,4 +6,5 @@ module game.engine.workshop {
 	requires java.desktop;
 	requires java.xml;
 	requires commons.logging;
+	requires org.apache.commons.lang3;
 }

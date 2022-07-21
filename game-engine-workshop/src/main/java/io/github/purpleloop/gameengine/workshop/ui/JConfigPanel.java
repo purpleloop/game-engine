@@ -1,4 +1,4 @@
-package io.github.purpleloop.gameengine.workshop;
+package io.github.purpleloop.gameengine.workshop.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +20,7 @@ import io.github.purpleloop.gameengine.core.config.GameConfig;
 import io.github.purpleloop.gameengine.core.config.LocalDataFileProvider;
 import io.github.purpleloop.gameengine.core.util.EngineException;
 
-/** The panel used to edit the configuration. */
+/** The panel used to edit a game configuration. */
 public class JConfigPanel extends JPanel implements ActionListener {
 
 	/**

@@ -1,4 +1,4 @@
-package io.github.purpleloop.gameengine.workshop.sprites;
+package io.github.purpleloop.gameengine.workshop.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,15 +14,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import io.github.purpleloop.commons.swing.sprites.model.IndexedSpriteSet;
+import io.github.purpleloop.commons.swing.sprites.model.SpriteGridIndex;
+import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
+
 /**
- * A panel used to display the source image containing sprites.
- * This panel is use to calibrate the indexed sprite set (grid / serial).
+ * A panel used to display the source image containing sprites. This panel is
+ * use to calibrate the indexed sprite set (grid / serial).
  */
 public class SpriteSourcePanel extends JPanel implements MouseMotionListener, MouseListener {
 
@@ -52,7 +58,7 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     private SpriteModel spriteModel;
 
     /** Rectangle. */
-    private Rectangle2D rectangle;
+    private Rectangle2D selectedElementRectangle;
 
     /** Mouse location. */
     private Point mouseLoc;
@@ -66,9 +72,6 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     /** Cached source image. */
     private Image cachedImage;
 
-    /** The grid index. */
-    private SpriteGridIndex spriteGridIndex = new SpriteGridIndex();
-
     /** The keyboard controller used to adjust the grid. */
     private KeyListener gridKeyboardController = new KeyAdapter() {
 
@@ -76,29 +79,34 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
         public void keyTyped(KeyEvent evt) {
 
             LOG.debug(evt.getKeyCode());
-
             int keyCode = evt.getKeyCode();
 
-            switch (keyCode) {
-            case KeyEvent.VK_UP:
-                spriteGridIndex.translate(0, -1);
-                break;
-            case KeyEvent.VK_DOWN:
-                spriteGridIndex.translate(0, 1);
-                break;
-            case KeyEvent.VK_LEFT:
-                spriteGridIndex.translate(-1, 0);
-                break;
-            case KeyEvent.VK_RIGHT:
-                spriteGridIndex.translate(1, 0);
-                break;
+            List<IndexedSpriteSet> indexes = spriteModel.getIndexes();
+            if (indexes.size() > 0) {
 
-            default:
+                // FIXME manage multiple index
+                IndexedSpriteSet spriteIndex = indexes.get(0);
 
+                switch (keyCode) {
+                case KeyEvent.VK_UP:
+                    spriteIndex.translate(0, -1);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    spriteIndex.translate(0, 1);
+                    break;
+                case KeyEvent.VK_LEFT:
+                    spriteIndex.translate(-1, 0);
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    spriteIndex.translate(1, 0);
+                    break;
+
+                default:
+
+                }
+
+                repaint();
             }
-
-            repaint();
-
         }
 
     };
@@ -121,8 +129,6 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
         updatePrefSize(WIDTH, HEIGHT);
 
-        spriteGridIndex.setGrid(3, 3, new Point(10, 10), 50, 50, 5, 5);
-
     }
 
     @Override
@@ -134,34 +140,54 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
         graphics.fillRect(0, 0, WIDTH, HEIGHT);
 
         if (spriteModel == null) {
-            graphics.drawString("You can open a sprite model descriptor.", 50, 50);
+
+            graphics.setColor(Color.LIGHT_GRAY);
+
+            graphics.drawString(
+                    "No sprite model is configured. You can create a new sprite model or open an existing one.",
+                    50, 50);
 
         } else {
 
             graphics.drawImage(spriteModel.getImage(), 0, 0, this);
-            if (rectangle != null) {
-                graphics2d.setColor(Color.RED);
-                graphics2d.draw(rectangle);
+
+            for (IndexedSpriteSet spriteIndex : spriteModel.getIndexes()) {
+
+                if (spriteIndex instanceof SpriteGridIndex) {
+
+                    SpriteGridIndex spriteGridIndex = (SpriteGridIndex) spriteIndex;
+
+                    graphics2d.setColor(Color.GREEN);
+                    Rectangle2D rc = new Rectangle2D.Double(0, 0, 1, 1);
+                    for (int indexValue = 0; indexValue < spriteGridIndex
+                            .getSpritesCount(); indexValue++) {
+
+                        int x = spriteIndex.getX(indexValue);
+                        int y = spriteIndex.getY(indexValue);
+                        rc.setRect(x, y, spriteIndex.getWidth(indexValue),
+                                spriteIndex.getHeight(indexValue));
+
+                        // Draw the cell rectangle
+                        graphics2d.draw(rc);
+
+                        // Draw the index of the cell
+                        graphics2d.drawString(Integer.toString(indexValue), x + 2, y + 11);
+                    }
+
+                }
 
             }
+
+            if (selectedElementRectangle != null) {
+                graphics2d.setColor(Color.RED);
+                graphics2d.draw(selectedElementRectangle);
+            }
+
             if (selectionRectangle != null) {
-                graphics2d.setColor(Color.WHITE);
+                graphics2d.setColor(Color.PINK);
                 graphics2d.draw(selectionRectangle);
 
             }
-        }
-
-        if (spriteGridIndex != null) {
-
-            graphics2d.setColor(Color.GREEN);
-            Rectangle2D rc = new Rectangle2D.Double(0, 0, 1, 1);
-            for (int c = 0; c < spriteGridIndex.getSpritesCount(); c++) {
-
-                rc.setRect(spriteGridIndex.getX(c), spriteGridIndex.getY(c), spriteGridIndex.getWidth(c), spriteGridIndex.getHeigth(c));
-
-                graphics2d.draw(rc);
-            }
-
         }
 
     }
@@ -181,15 +207,23 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
         if (spriteModel != null) {
 
-            IndexedSpriteSet spriteIndex = spriteModel.getIndex();
+            for (IndexedSpriteSet spriteIndex : spriteModel.getIndexes()) {
 
-            int indexSprite = spriteIndex.getIndexFor(e.getPoint());
-            LOG.debug(" => " + indexSprite);
-            indexSelectionListener.setSelectedSpriteIndex(indexSprite);
+                Optional<Integer> indexSpriteOptional = spriteIndex.getIndexFor(e.getPoint());
 
-            rectangle = new Rectangle2D.Double(spriteIndex.getX(indexSprite), spriteIndex.getY(indexSprite), spriteIndex.getWidth(indexSprite), spriteIndex.getHeigth(indexSprite));
+                if (indexSpriteOptional.isPresent()) {
+                    int indexSprite = indexSpriteOptional.get();
+                    LOG.debug("Selected index => " + indexSprite);
+                    indexSelectionListener.setSelectedSpriteIndex(indexSprite);
 
-            LOG.debug("Rectangle " + rectangle);
+                    selectedElementRectangle = new Rectangle2D.Double(spriteIndex.getX(indexSprite),
+                            spriteIndex.getY(indexSprite), spriteIndex.getWidth(indexSprite),
+                            spriteIndex.getHeight(indexSprite));
+
+                    LOG.debug("Selected rectangle " + selectedElementRectangle);
+                }
+
+            }
 
             repaint();
         }
@@ -201,10 +235,12 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     public void mouseDragged(MouseEvent e) {
         Point dest = e.getPoint();
 
-        selectionRectangle = new Rectangle(mouseLoc.x, mouseLoc.y, dest.x - mouseLoc.x, dest.y - mouseLoc.y);
+        selectionRectangle = new Rectangle(mouseLoc.x, mouseLoc.y, dest.x - mouseLoc.x,
+                dest.y - mouseLoc.y);
 
         if (statusObserver != null) {
-            statusObserver.setStatus("Rectangle", "(" + selectionRectangle.width + "," + selectionRectangle.height + ")");
+            statusObserver.setStatus("Rectangle",
+                    "(" + selectionRectangle.width + "," + selectionRectangle.height + ")");
         }
 
         repaint();
@@ -217,7 +253,7 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // Unused        
+        // Unused
     }
 
     @Override
@@ -249,6 +285,9 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
             if (cachedImage != null) {
                 updatePrefSize(cachedImage.getWidth(this), cachedImage.getHeight(this));
             }
+        } else {
+            this.cachedImage = null;
+            updatePrefSize(200, 200);
         }
 
         reset();
@@ -257,11 +296,13 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
     /** Reset the panel. */
     private void reset() {
-        rectangle = null;
+        selectedElementRectangle = null;
         selectionRectangle = null;
     }
 
-    /** Update the panel size.
+    /**
+     * Update the panel size.
+     * 
      * @param newWidth width
      * @param newHeight height
      */

@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-    <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="warn">
-            <AppenderRef ref="Console" />
-        </Root>
-        <Logger name="io.github.purpleloop.gameengine" level="info" additivity="false">
-            <AppenderRef ref="Console" />
-        </Logger>
-        <Logger name="io.github.purpleloop.gameengine.workshop" level="debug" additivity="false">
-            <AppenderRef ref="Console" />
-        </Logger>
 
-    </Loggers>
+	<Appenders>
+
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+	</Appenders>
+
+	<Loggers>
+
+		<Root level="warn">
+			<AppenderRef ref="Console" />
+		</Root>
+
+		<Logger name="io.github.purpleloop.gameengine" level="info" />
+
+		<Logger name="io.github.purpleloop.gameengine.workshop" level="debug" />
+		<Logger name="io.github.purpleloop.commons.swing.sprites" level="debug" />
+
+	</Loggers>
 </Configuration>

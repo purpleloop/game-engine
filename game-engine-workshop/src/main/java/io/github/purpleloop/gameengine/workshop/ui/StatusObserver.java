@@ -1,4 +1,4 @@
-package io.github.purpleloop.gameengine.workshop.sprites;
+package io.github.purpleloop.gameengine.workshop.ui;
 
 /** An observer of status. */
 public interface StatusObserver {
