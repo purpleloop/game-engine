@@ -1,4 +1,4 @@
-package io.github.purpleloop.gameengine.workshop.ui;
+package io.github.purpleloop.gameengine.workshop.ui.sprites;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,7 +26,9 @@ import org.apache.commons.logging.LogFactory;
 
 import io.github.purpleloop.commons.swing.sprites.model.SpriteGridIndex;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
-import io.github.purpleloop.gameengine.workshop.ui.SpriteSourcePanel.IndexSelectionListener;
+import io.github.purpleloop.gameengine.workshop.ui.StatusObserver;
+import io.github.purpleloop.gameengine.workshop.ui.TreeModelAdapter;
+import io.github.purpleloop.gameengine.workshop.ui.sprites.SpriteSourcePanel.IndexSelectionListener;
 
 /**
  * A panel for editing a sprite set. It is composed of an image source panel and

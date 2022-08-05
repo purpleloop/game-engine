@@ -1,4 +1,4 @@
-package io.github.purpleloop.gameengine.workshop.ui;
+package io.github.purpleloop.gameengine.workshop.ui.sprites;
 
 import java.util.List;
 

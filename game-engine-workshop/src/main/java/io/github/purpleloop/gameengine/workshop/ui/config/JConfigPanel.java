@@ -1,4 +1,4 @@
-package io.github.purpleloop.gameengine.workshop.ui;
+package io.github.purpleloop.gameengine.workshop.ui.config;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

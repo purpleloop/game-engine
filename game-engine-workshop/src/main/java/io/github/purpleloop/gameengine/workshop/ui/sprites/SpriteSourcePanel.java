@@ -1,4 +1,4 @@
-package io.github.purpleloop.gameengine.workshop.ui;
+package io.github.purpleloop.gameengine.workshop.ui.sprites;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import io.github.purpleloop.commons.swing.sprites.model.IndexedSpriteSet;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteGridIndex;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
+import io.github.purpleloop.gameengine.workshop.ui.StatusObserver;
 
 /**
  * A panel used to display the source image containing sprites. This panel is

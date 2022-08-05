@@ -30,6 +30,8 @@ import io.github.purpleloop.commons.exception.PurpleException;
 import io.github.purpleloop.commons.swing.SwingUtils;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
 import io.github.purpleloop.gameengine.workshop.Preferences;
+import io.github.purpleloop.gameengine.workshop.ui.config.JConfigPanel;
+import io.github.purpleloop.gameengine.workshop.ui.sprites.SpriteSetEditorPanel;
 
 /** Main frame of the game engine workshop. */
 public class WorkshopUi extends JFrame implements StatusObserver {
