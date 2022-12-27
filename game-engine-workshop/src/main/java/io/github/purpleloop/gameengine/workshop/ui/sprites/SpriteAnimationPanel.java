@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
@@ -129,7 +130,21 @@ public class SpriteAnimationPanel extends JPanel {
 
         LOG.debug("Playing animation");
         if (currentAnimationTask != null) {
+            LOG.info("Ignore play command, an animation is already playing");
+
+            JOptionPane.showMessageDialog(this, "An animation is already playing");
+
             return;
+        }
+
+        if (currentAnimationIndex == -1) {
+            JOptionPane.showMessageDialog(this, "Please select an image as starting index first");
+            return;
+        }
+
+        if (frameCount <= 2) {
+            JOptionPane.showMessageDialog(this, "The number of frame is " + frameCount
+                    + ", try to increase it to get an animation working");
         }
 
         // The animation task
@@ -152,11 +167,12 @@ public class SpriteAnimationPanel extends JPanel {
 
     /** Stop the animation task. */
     public void stop() {
-        LOG.debug("Stopping animation");
-        currentAnimationTask.cancel();
-        currentAnimationTask = null;
-        animationTimer.purge();
-
+        if (currentAnimationTask != null) {
+            LOG.debug("Stopping animation");
+            currentAnimationTask.cancel();
+            currentAnimationTask = null;
+            animationTimer.purge();
+        }
     }
 
     /** @param value the new animation delay */
@@ -164,7 +180,9 @@ public class SpriteAnimationPanel extends JPanel {
         this.animationDelay = value;
     }
 
-    /** Set the number of frame for the animation.
+    /**
+     * Set the number of frame for the animation.
+     * 
      * @param value the number of frames
      */
     public void setFrameCount(int value) {

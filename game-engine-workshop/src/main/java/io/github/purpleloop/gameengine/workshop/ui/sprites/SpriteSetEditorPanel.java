@@ -21,6 +21,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -156,7 +157,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
         tSpriteModel = new JTree(DUMMY_MODEL);
         add(tSpriteModel, BorderLayout.WEST);
 
-        spriteAnimationPanel = new SpriteAnimationPanel(200, 800);
+        spriteAnimationPanel = new SpriteAnimationPanel(350, 800);
         animationPanel.add(spriteAnimationPanel, BorderLayout.CENTER);
 
         JToolBar tbAnimation = new JToolBar(SwingConstants.HORIZONTAL);
@@ -197,8 +198,8 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         spriteGridPanel.setModel(spriteModel);
 
-        // TODO works but maybe to improve to prevent the whole reconstruction of the
-        // tree model
+        // TODO works but maybe to improve to prevent the whole reconstruction
+        // of the tree model
         treeModelAdapter = new TreeModelAdapter(spriteModel);
         tSpriteModel.setModel(treeModelAdapter);
 
@@ -215,8 +216,8 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
         if (rect != null) {
             spriteModel.addRectangle(rect);
 
-            // TODO works but maybe to improve to prevent the whole reconstruction of the
-            // tree model
+            // TODO works but maybe to improve to prevent the whole
+            // reconstruction of the tree model
             tSpriteModel.setModel(new TreeModelAdapter(spriteModel));
 
         }
@@ -257,21 +258,28 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     protected JButton createToolButton(String imageName, String actionCommand, String toolTipText,
             String altText, JToolBar toolBar, ActionListener listener) {
 
-        // Look for the image.
-        String imgLocation = "images/" + imageName + ".gif";
-        URL imageURL = this.getClass().getResource(imgLocation);
-
         // Create and initialize the button.
         JButton button = new JButton();
         button.setActionCommand(actionCommand);
         button.setToolTipText(toolTipText);
         button.addActionListener(listener);
 
-        if (imageURL != null) {
-            button.setIcon(new ImageIcon(imageURL, altText));
-        } else {
+        // Look for the image.
+        URL imageURL = null;
+        if (!StringUtils.isBlank(imageName)) {
+
+            String imgLocation = "images/" + imageName + ".gif";
+            imageURL = this.getClass().getResource(imgLocation);
+
+            if (imageURL != null) {
+                button.setIcon(new ImageIcon(imageURL, altText));
+            } else {
+                LOG.error("Resource not found: " + imgLocation);
+            }
+        }
+
+        if (imageURL == null) {
             button.setText(altText);
-            LOG.error("Resource not found: " + imgLocation);
         }
 
         toolBar.add(button);
