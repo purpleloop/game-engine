@@ -65,7 +65,13 @@ public class PredefinedXmlLevelSet implements ILevelManager {
 
         try (InputStream is = dfp.getInputStream(levelSetFileName);) {
 
-            DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            
+            // Disable external entities declaration to prevent XXE vulnerabilities
+            documentBuilderFactory
+                    .setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            
+            DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
             Document doc = db.parse(is);
 
             // Get the root level
