@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -11,44 +11,66 @@
 	<name>Game Engine</name>
 	<version>1.0.0-SNAPSHOT</version>
 
+    <description>A Java game engine for classical 2D games</description>
+    <url>https://github.com/purpleloop/game-engine</url>
+
 	<organization>
 		<name>Purple Loop</name>
+		<url>https://github.com/purpleloop</url>
 	</organization>
 
+    <scm>
+        <url>https://github.com/purpleloop/game-engine.git</url>
+        <connection>https://github.com/purpleloop/game-engine.git</connection>
+        <developerConnection>https://github.com/purpleloop/game-engine.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
 	<properties>
-		<java.version>11</java.version>
-		<junit.version>5.8.2</junit.version>
+		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<log4j.version>2.17.2</log4j.version>
+		<purple-commons.version>1.0.0-SNAPSHOT</purple-commons.version>
+		<purple-commons-swing.version>1.0.0-SNAPSHOT</purple-commons-swing.version>
+		<log4j.version>2.20.0</log4j.version>
+		<commons-lang.version>3.12.0</commons-lang.version>
+		<junit.version>5.9.2</junit.version>
 	</properties>
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<release>11</release>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+					<release>${java.version}</release>
+					<compilerVersion>${java.version}</compilerVersion>
 					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.ow2.asm</groupId>
-						<artifactId>asm</artifactId>
-						<version>6.2</version> <!-- Use newer version of ASM -->
-					</dependency>
-				</dependencies>
-			</plugin>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
 	<dependencyManagement>
 		<dependencies>
+            
+            <dependency>
+                <groupId>io.github.purpleloop</groupId>
+                <artifactId>purple-commons</artifactId>
+                <version>${purple-commons.version}</version>
+            </dependency>
+    
+            <dependency>
+                <groupId>io.github.purpleloop</groupId>
+                <artifactId>purple-commons-swing</artifactId>
+                <version>${purple-commons-swing.version}</version>
+            </dependency>            
+            
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.8.1</version>
+				<version>${commons-lang.version}</version>
 			</dependency>
 
 			<dependency>
@@ -57,6 +79,24 @@
 				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>
+			
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jcl</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -69,6 +109,6 @@
 		<module>game-engine-action-swing</module>
 		<module>game-engine-board</module>
 		<module>game-engine-board-swing</module>
-		<!-- teaser : soon available ... <module>game-engine-workshop</module> -->
+		<module>game-engine-workshop</module>
 	</modules>
 </project>
