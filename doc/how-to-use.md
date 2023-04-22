@@ -48,11 +48,11 @@ Create a configuration file according to the _sample-config.xml_ Schema _game-co
         <class role="level_provider" classname="io.github.purpleloop.gameengine.action.model.level.PredefinedLevelSet"/>
         <class role="controller" classname="io.github.purpleloop.gameengine.action.gui.keyboard.KeyboardController"/>
         
-        <keymap key="Space" action="mainAction"/>    
-        <keymap key="Up" action="up"/>
-        <keymap key="Down" action="down"/>
-        <keymap key="Left" action="left"/>
-        <keymap key="Right" action="right"/>
+        <keymap key="VK_SPACE" action="mainAction"/>    
+        <keymap key="VK_UP" action="up"/>
+        <keymap key="VK_DOWN" action="down"/>
+        <keymap key="VK_LEFT" action="left"/>
+        <keymap key="VK_RIGHT" action="right"/>
         
         <image name="sprites" location="sprites.gif"/>
         <sound name="sound1" location="sound1.wav"/>
