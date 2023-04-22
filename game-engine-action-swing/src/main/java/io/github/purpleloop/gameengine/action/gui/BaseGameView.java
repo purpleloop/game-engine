@@ -2,6 +2,7 @@ package io.github.purpleloop.gameengine.action.gui;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -92,12 +93,13 @@ public abstract class BaseGameView implements IGameView {
 
 		// Dynamic key mapping controls
 		int x = 50;
-		int y = 150;
-		for (Map.Entry<String, String> keyMapEntry : config.getKeyMap().entrySet()) {
+        int y = 150;
+        for (Map.Entry<Integer, String> keyMapEntry : config.getKeyMap().entrySet()) {
 
-			g.drawString("<" + keyMapEntry.getKey().toUpperCase() + "> for " + keyMapEntry.getValue(), x, y);
-			y += 20;
-		}
+            g.drawString("<" + KeyEvent.getKeyText(keyMapEntry.getKey()).toUpperCase() + "> for "
+                    + keyMapEntry.getValue(), x, y);
+            y += 20;
+        }
 
 	}
 
