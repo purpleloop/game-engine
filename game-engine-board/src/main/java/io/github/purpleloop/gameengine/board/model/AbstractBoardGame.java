@@ -219,9 +219,8 @@ public abstract class AbstractBoardGame implements Runnable {
      * 
      * @param play the play to handle
      * @return true if the play was successful, false otherwise
-     * @throws BoardGameException if an exception occurred 
      */
-    public final boolean handlePlay(IBoardPlay play) throws BoardGameException {
+    public final boolean handlePlay(IBoardPlay play) {
 
         if (!isActive()) {
             // No game is running
@@ -238,7 +237,15 @@ public abstract class AbstractBoardGame implements Runnable {
                 Message.getMessage("player.action", currentPlayer.getName(), play.toShortString()));
         LOG.debug("Play for player " + currentPlayer);
 
-        return doHandlePlay(play);
+        try {
+            return doHandlePlay(play);
+
+        } catch (BoardGameException ex) {            
+            gameUi.displayMessage(SwingUtils.MessageType.ERROR,
+                    Message.getMessage("error.exception"));
+            LOG.error("An exception occurred during the player action", ex);
+            return false;
+        }
     }
 
     /**
