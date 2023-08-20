@@ -42,7 +42,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
     private static final long serialVersionUID = 3902861172605004054L;
 
     /** Width of the communication area. */
-    public static final int COM_AREA_HEIGHT = 20;
+    public static final int COM_AREA_HEIGHT = 10;
 
     /** Height of the communication area. */
     public static final int COM_AREA_WIDTH = 20;
