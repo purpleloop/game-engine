@@ -441,6 +441,8 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
     /** Create a new game. */
     public void newGame() {
 
+        LOG.debug("New game requested");
+
         if (game.isActive()) {
             displayMessage(SwingUtils.MessageType.INFO,
                     "A game is active, please terminate it before creating another one ...");
@@ -460,6 +462,8 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
 
     /** Stop the current game. */
     protected void stopGame() {
+
+        LOG.debug("Stop game requested");
 
         if (!game.isActive()) {
             displayMessage(SwingUtils.MessageType.INFO, Message.getMessage("requires.game.active"));

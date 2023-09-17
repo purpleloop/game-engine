@@ -272,6 +272,8 @@ public abstract class AbstractBoardGame implements Runnable {
 
         while (getState() == BoardGameState.INGAME) {
 
+            LOG.debug("Game is in progress");
+
             try {
                 if (isHumanTurn()) {
 
