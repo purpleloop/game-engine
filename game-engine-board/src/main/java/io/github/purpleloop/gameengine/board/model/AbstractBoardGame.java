@@ -23,6 +23,11 @@ import io.github.purpleloop.gameengine.core.util.Message;
 
 /**
  * This abstract class manages the run of a board game within a game thread.
+ * 
+ * FIXME : Refactor this class in order to separate engine mechanics and game logics. Games
+ * should'nt depend on threads, nor include load or save methods.
+ * 
+ * Possibly move towards a game session like AbstractSession in action games modules.
  */
 public abstract class AbstractBoardGame implements Runnable {
 
