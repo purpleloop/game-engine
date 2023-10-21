@@ -235,9 +235,9 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
                 } else if (command.equals(CMD_STOP_GAME)) {
                     stopGame();
                 } else if (command.equals(CMD_LOAD_GAME)) {
-                    saveGame();
-                } else if (command.equals(CMD_SAVE_GAME)) {
                     loadGame();
+                } else if (command.equals(CMD_SAVE_GAME)) {
+                    saveGame();
                 } else if (command.equals(CMD_SETUP_PLAYERS)) {
 
                     setupPlayers();
