@@ -369,7 +369,13 @@ public abstract class AbstractBoardGame implements Runnable {
         turnCounter = 1;
         history = new Stack<>();
 
-        // Determine the first player
+        determineFirstPlayer();
+
+        fireGameChanged();
+    }
+
+    /** Determine the first player. */
+    private void determineFirstPlayer() throws BoardGameException {
         Optional<IPlayerInfo> sayWhoStarts = sayWhoStarts();
         if (sayWhoStarts.isEmpty()) {
             throw new BoardGameException(
@@ -378,10 +384,6 @@ public abstract class AbstractBoardGame implements Runnable {
 
         currentPlayer = sayWhoStarts.get();
         LOG.info("It is to " + currentPlayer.getName() + " to start the game.");
-
-        Thread gameThread = new Thread(this, "GameThread");
-        gameThread.start();
-        fireGameChanged();
     }
 
     /** Terminates the current game and the associated game thread. */

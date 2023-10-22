@@ -451,7 +451,12 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
         }
 
         try {
+            // FIXME To be handled in a BoardGameEngine
             game.newGame();
+
+            Thread gameThread = new Thread(game, "GameThread");
+            gameThread.start();
+
         } catch (BoardGameException e) {
             LOG.error("The creation of the new game has failed.", e);
             displayMessage(SwingUtils.MessageType.ERROR,
