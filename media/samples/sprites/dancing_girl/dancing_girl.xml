@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<spriteSet nextId="1">
+    <properties />
+    <sourceImage path="dancing_girl_all.png" pathMode="RELATIVE" />
+    <indexes>
+        <gridIndex cellHeight="53" cellWidth="39" hSpacing="0"
+            id="0" numColumns="8" numRows="5" sx="0" sy="0" vSpacing="0" />
+    </indexes>
+</spriteSet>

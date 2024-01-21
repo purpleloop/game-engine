@@ -85,6 +85,9 @@ public class WorkshopUi extends JFrame implements StatusObserver {
     /** The status label. */
     private JLabel status;
 
+    /** File chooser for images. */
+    private JFileChooser fcImages;
+
     /** File chooser for the sprite sheet to edit. */
     private JFileChooser fcSpriteSheet;
 
@@ -162,15 +165,17 @@ public class WorkshopUi extends JFrame implements StatusObserver {
         status = new JLabel();
         mainPanel.add(status, BorderLayout.SOUTH);
 
-        fcSpriteSheet = new JFileChooser(new File("."));
-
         pack();
 
         spriteSetEditorPanel.getSourcePanel().requestFocusInWindow();
-    }
 
-    /** Creates a new sprite sheet (from a source image). */
-    protected void newSpriteSheet() {
+        fcSpriteSheet = new JFileChooser(new File("."));
+        fcSpriteSheet.setDialogTitle("Select the sprite sheet descriptor");
+        fcSpriteSheet.setFileFilter(xmlFilter);
+
+        fcImages = new JFileChooser(new File("."));
+        fcImages.setDialogTitle("Select the source image");
+        fcImages.setFileFilter(imageFilter);
 
         String recentlyUsed = preferences.getRecentlyUsed();
         if (StringUtils.isNotBlank(recentlyUsed)) {
@@ -178,34 +183,27 @@ public class WorkshopUi extends JFrame implements StatusObserver {
             File recentDir = Paths.get(recentlyUsed).getParent().toFile().getAbsoluteFile();
 
             LOG.info("Preset path to " + recentDir.getAbsolutePath());
-            fcSpriteSheet.setDialogTitle("Select the source image");
             fcSpriteSheet.setCurrentDirectory(recentDir);
-            fcSpriteSheet.setFileFilter(imageFilter);
+            fcImages.setCurrentDirectory(recentDir);
+
         }
 
-        int dialogResult = fcSpriteSheet.showOpenDialog(this);
+    }
+
+    /** Creates a new sprite sheet (from a source image). */
+    protected void newSpriteSheet() {
+
+        int dialogResult = fcImages.showOpenDialog(this);
 
         if (dialogResult == JFileChooser.APPROVE_OPTION) {
 
-            File selectedFile = fcSpriteSheet.getSelectedFile();
+            File selectedFile = fcImages.getSelectedFile();
             createSpriteModelWithFile(selectedFile);
         }
     }
 
     /** Open an existing sprite sheet. */
     protected void openSpriteSheet() {
-
-        String recentlyUsed = preferences.getRecentlyUsed();
-        if (StringUtils.isNotBlank(recentlyUsed)) {
-
-            File recentDir = Paths.get(recentlyUsed).getParent().toFile().getAbsoluteFile();
-
-            LOG.info("Preset path to " + recentDir.getAbsolutePath());
-            fcSpriteSheet.setDialogTitle("Select the sprite sheet descriptor");
-            fcSpriteSheet.setCurrentDirectory(recentDir);
-            fcSpriteSheet.setFileFilter(xmlFilter);
-
-        }
 
         int dialogResult = fcSpriteSheet.showOpenDialog(this);
 
