@@ -13,7 +13,7 @@ import java.util.Stack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import io.github.purpleloop.commons.swing.SwingUtils;
+import io.github.purpleloop.commons.ui.UiMessageType;
 import io.github.purpleloop.gameengine.board.model.exception.BoardGameException;
 import io.github.purpleloop.gameengine.board.model.interfaces.IBoardGameUI;
 import io.github.purpleloop.gameengine.board.model.interfaces.IBoardPlay;
@@ -24,10 +24,11 @@ import io.github.purpleloop.gameengine.core.util.Message;
 /**
  * This abstract class manages the run of a board game within a game thread.
  * 
- * FIXME : Refactor this class in order to separate engine mechanics and game logics. Games
- * should'nt depend on threads, nor include load or save methods.
+ * FIXME : Refactor this class in order to separate engine mechanics and game
+ * logics. Games should'nt depend on threads, nor include load or save methods.
  * 
- * Possibly move towards a game session like AbstractSession in action games modules.
+ * Possibly move towards a game session like AbstractSession in action games
+ * modules.
  */
 public abstract class AbstractBoardGame implements Runnable {
 
@@ -54,6 +55,9 @@ public abstract class AbstractBoardGame implements Runnable {
 
     /** The current player. */
     protected IPlayerInfo currentPlayer;
+
+    /** The currently awaited player */
+    protected IPlayerInfo awaitedPlayer;
 
     /** History of played actions. */
     protected Stack<IBoardPlay> history;
@@ -233,21 +237,19 @@ public abstract class AbstractBoardGame implements Runnable {
         }
 
         if (!isHumanTurn()) {
-            gameUi.displayMessage(SwingUtils.MessageType.ERROR,
-                    Message.getMessage("error.not_your_turn"));
+            gameUi.displayMessage(UiMessageType.ERROR, Message.getMessage("error.not_your_turn"));
             return false;
         }
 
-        gameUi.displayMessage(SwingUtils.MessageType.TRACE,
+        gameUi.displayMessage(UiMessageType.TRACE,
                 Message.getMessage("player.action", currentPlayer.getName(), play.toShortString()));
         LOG.debug("Play for player " + currentPlayer);
 
         try {
             return doHandlePlay(play);
 
-        } catch (BoardGameException ex) {            
-            gameUi.displayMessage(SwingUtils.MessageType.ERROR,
-                    Message.getMessage("error.exception"));
+        } catch (BoardGameException ex) {
+            gameUi.displayMessage(UiMessageType.ERROR, Message.getMessage("error.exception"));
             LOG.error("An exception occurred during the player action", ex);
             return false;
         }
@@ -273,68 +275,75 @@ public abstract class AbstractBoardGame implements Runnable {
         LOG.debug("Starting the game thread.");
 
         setState(BoardGameState.INGAME);
-        IPlayerInfo awaitedPlayer = null;
+        awaitedPlayer = null;
 
         while (getState() == BoardGameState.INGAME) {
-
-            LOG.debug("Game is in progress");
-
-            try {
-                if (isHumanTurn()) {
-
-                    if (awaitedPlayer != currentPlayer) {
-                        awaitedPlayer = currentPlayer;
-                        gameUi.setStatus(
-                                Message.getMessage("info.your_turn", currentPlayer.getName()));
-                    }
-
-                    try {
-                        Thread.sleep(THREAD_SLEEP_DELAY);
-                    } catch (InterruptedException e) {
-                        LOG.error("Thread game was interrupted", e);
-                        setState(BoardGameState.TERMINATED);
-                        Thread.currentThread().interrupt();
-                    }
-
-                } else {
-
-                    gameUi.setStatus("CPU plays for " + currentPlayer.getName() + " ... ");
-                    cpuPlay(currentPlayer);
-                    endOfPlay();
-
-                    awaitedPlayer = null;
-                }
-
-            } catch (BoardGameException ex) {
-                setState(BoardGameState.TERMINATED);
-                LOG.error("Game will stop due to an exception", ex);
-            }
-
-            if (getState() != BoardGameState.TERMINATING) {
-
-                if (passCounter >= players.size()) {
-                    LOG.info("The game will terminate, all players have passed their turn.");
-                    setState(BoardGameState.TERMINATING);
-                }
-
-                if (board.isTerminated()) {
-                    LOG.info("The game will terminate, ending condition are satisfied.");
-                    setState(BoardGameState.TERMINATING);
-                }
-
-                if ((turnCounter > getMaxTurns())) {
-                    LOG.info("The game will terminate, the maximum number of turns ("
-                            + getMaxTurns() + " has been reached.");
-                    setState(BoardGameState.TERMINATING);
-                }
-            }
-
+            gameStep();
         }
 
         gameUi.setStatus("Game is terminated");
         LOG.debug("Game thread terminated");
-        gameUi.displayMessage(SwingUtils.MessageType.INFO,
+        gameUi.displayMessage(UiMessageType.INFO,
                 "The game has ended : " + board.getWinningStatus());
+    }
+
+    /** A game step. */
+    protected void gameStep() {
+
+        LOG.debug("Game is in progress");
+
+        try {
+            if (isHumanTurn()) {
+
+                // The games waits for an a human (currentPlayer) to play.
+                // A Handle
+
+                if (awaitedPlayer != currentPlayer) {
+                    awaitedPlayer = currentPlayer;
+
+                    gameUi.setStatus(Message.getMessage("info.your_turn", currentPlayer.getName()));
+                }
+
+            } else {
+
+                gameUi.setStatus("CPU plays for " + currentPlayer.getName() + " ... ");
+                cpuPlay(currentPlayer);
+                endOfPlay();
+
+                awaitedPlayer = null;
+            }
+
+            try {
+                Thread.sleep(THREAD_SLEEP_DELAY);
+            } catch (InterruptedException e) {
+                LOG.error("Thread game was interrupted", e);
+                setState(BoardGameState.TERMINATED);
+                Thread.currentThread().interrupt();
+            }
+
+        } catch (BoardGameException ex) {
+            setState(BoardGameState.TERMINATED);
+            LOG.error("Game will stop due to an exception", ex);
+        }
+
+        if (getState() != BoardGameState.TERMINATING) {
+
+            if (passCounter >= players.size()) {
+                LOG.info("The game will terminate, all players have passed their turn.");
+                setState(BoardGameState.TERMINATING);
+            }
+
+            if (board.isTerminated()) {
+                LOG.info("The game will terminate, ending condition are satisfied.");
+                setState(BoardGameState.TERMINATING);
+            }
+
+            if ((turnCounter > getMaxTurns())) {
+                LOG.info("The game will terminate, the maximum number of turns (" + getMaxTurns()
+                        + " has been reached.");
+                setState(BoardGameState.TERMINATING);
+            }
+        }
     }
 
     /**

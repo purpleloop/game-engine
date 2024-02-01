@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import io.github.purpleloop.commons.swing.SwingUtils;
+import io.github.purpleloop.commons.ui.UiMessageType;
 import io.github.purpleloop.gameengine.board.gui.dialog.PlayerSetupDialog;
 import io.github.purpleloop.gameengine.board.model.AbstractBoardGame;
 import io.github.purpleloop.gameengine.board.model.PlayerType;
@@ -247,7 +248,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
                     stopGame();
 
                 } else if (!processCommand(command)) {
-                    displayMessage(SwingUtils.MessageType.ERROR,
+                    displayMessage(UiMessageType.ERROR,
                             Message.getMessage("command.unknown", command));
                     LOG.error("The command '" + command + "' is not managed");
                 }
@@ -339,11 +340,11 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
 
     @Override
     public void displayMessage(String message) {
-        displayMessage(SwingUtils.MessageType.TRACE, message);
+        displayMessage(UiMessageType.TRACE, message);
     }
 
     @Override
-    public void displayMessage(SwingUtils.MessageType type, String message) {
+    public void displayMessage(UiMessageType type, String message) {
         SwingUtils.displayMessage(this, type, message, messageArea);
 
     }
@@ -369,7 +370,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
     protected final void setupPlayers() {
 
         if (game.isActive()) {
-            displayMessage(SwingUtils.MessageType.INFO, Message.getMessage("requires.game.idle"));
+            displayMessage(UiMessageType.INFO, Message.getMessage("requires.game.idle"));
             return;
         }
 
@@ -384,7 +385,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
             }
         } catch (BoardGameException e) {
             LOG.error("Unable to setup platers", e);
-            displayMessage(SwingUtils.MessageType.ERROR,
+            displayMessage(UiMessageType.ERROR,
                     Message.getMessage("error.cannot.apply.because", e.getMessage()));
         } finally {
             playerSetupDialog.dispose();
@@ -397,7 +398,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
     public void saveGame() {
 
         if (!game.isActive()) {
-            displayMessage(SwingUtils.MessageType.INFO, Message.getMessage("requires.game.active"));
+            displayMessage(UiMessageType.INFO, Message.getMessage("requires.game.active"));
             return;
         }
 
@@ -408,8 +409,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
                 game.save(fileChooser.getSelectedFile());
             } catch (BoardGameException e) {
                 LOG.error("Failed to save the game", e);
-                displayMessage(SwingUtils.MessageType.ERROR,
-                        "Unable to save the game :\n" + e.getMessage());
+                displayMessage(UiMessageType.ERROR, "Unable to save the game :\n" + e.getMessage());
             }
         }
     }
@@ -420,7 +420,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
     public void loadGame() {
 
         if (game.isActive()) {
-            displayMessage(SwingUtils.MessageType.INFO, Message.getMessage("requires.game.active"));
+            displayMessage(UiMessageType.INFO, Message.getMessage("requires.game.active"));
             return;
         }
 
@@ -432,7 +432,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
                 game.load(fileChooser.getSelectedFile());
             } catch (BoardGameException e) {
                 LOG.error("Game loading failed", e);
-                displayMessage(SwingUtils.MessageType.ERROR,
+                displayMessage(UiMessageType.ERROR,
                         Message.getMessage("error.cannot.apply.because", e.getMessage()));
             }
         }
@@ -444,7 +444,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
         LOG.debug("New game requested");
 
         if (game.isActive()) {
-            displayMessage(SwingUtils.MessageType.INFO,
+            displayMessage(UiMessageType.INFO,
                     "A game is active, please terminate it before creating another one ...");
 
             return;
@@ -459,7 +459,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
 
         } catch (BoardGameException e) {
             LOG.error("The creation of the new game has failed.", e);
-            displayMessage(SwingUtils.MessageType.ERROR,
+            displayMessage(UiMessageType.ERROR,
                     Message.getMessage("error.cannot.apply.because", e.getMessage()));
         }
 
@@ -471,7 +471,7 @@ public abstract class BasicGameFrame extends JFrame implements ActionListener, I
         LOG.debug("Stop game requested");
 
         if (!game.isActive()) {
-            displayMessage(SwingUtils.MessageType.INFO, Message.getMessage("requires.game.active"));
+            displayMessage(UiMessageType.INFO, Message.getMessage("requires.game.active"));
             return;
         }
         game.terminate();
