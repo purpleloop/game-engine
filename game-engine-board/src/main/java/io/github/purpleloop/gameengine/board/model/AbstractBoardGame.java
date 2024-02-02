@@ -179,7 +179,10 @@ public abstract class AbstractBoardGame implements Runnable {
     }
 
     /**
-     * Get the role with the given index.
+     * Get the name of the role with the given index.
+     * 
+     * <p>Role names can be, for instance, "black" and "white" for a chess board game,
+     * or "Blue team" and "Red team" ...</p>
      * 
      * @param index role index
      * @return name of the role
@@ -189,7 +192,7 @@ public abstract class AbstractBoardGame implements Runnable {
     }
 
     /**
-     * @return is this the turn of an human player ?
+     * @return is this the turn of an human player ? otherwise a CPU has to play.
      */
     public final synchronized boolean isHumanTurn() {
         return currentPlayer.isHumain();
