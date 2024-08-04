@@ -64,6 +64,7 @@ public class TreeModelAdapter implements TreeModel {
 
             if (index == 0) {
                 return IMAGE_NODE;
+
             } else if (index == 1) {
                 return INDEXES_NODE;
             }
@@ -104,11 +105,10 @@ public class TreeModelAdapter implements TreeModel {
         if (parent instanceof IndexedSpriteSet) {
             result = 0;
         }
-        
 
         if (parent instanceof SingleSprite) {
             result = 0;
-        }        
+        }
 
         LOG.debug("getChildCount for " + parent + " => " + result);
         return result;
@@ -148,7 +148,7 @@ public class TreeModelAdapter implements TreeModel {
         if (parent == SINGLE_SPRITES) {
             return spriteModel.getSingleSprites().indexOf(child);
         }
-        
+
         return -1;
     }
 
@@ -173,6 +173,25 @@ public class TreeModelAdapter implements TreeModel {
             listener.treeStructureChanged(e);
         }
 
+    }
+
+    /**
+     * Deletes a tree node given it's path.
+     * 
+     * @param path the tree path of the element to delete
+     */
+    public void deleteObjectAtPath(TreePath path) {
+
+        Object[] pathElements = path.getPath();
+
+        // Currently only deletion of an index is implemented
+        if (pathElements.length != 3 || pathElements[0] != SPRITE_MODEL_NODE
+                || pathElements[1] != INDEXES_NODE) {
+            return;
+        }
+
+        IndexedSpriteSet nodeToRemove = (IndexedSpriteSet) pathElements[2];
+        spriteModel.removeIndex(nodeToRemove);
     }
 
 }

@@ -2,14 +2,19 @@ package io.github.purpleloop.gameengine.workshop.ui.sprites;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.net.URL;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JToolBar;
@@ -109,13 +114,31 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     private SpriteSourcePanel spriteSourcePanel;
 
     /** View of the sprite model structure represented as a JTree. */
-    private JTree tSpriteModel;
+    private JTree spriteModelJTree;
 
     /** An editor for a sprite grid index. */
     private SpriteGridIndexPanel spriteGridPanel;
 
     /** The tree model adapter for the sprite model. */
     private TreeModelAdapter treeModelAdapter;
+
+    /** Delete node action. */
+    private Action deleteNodeAction = new AbstractAction("Delete") {
+
+        /** Serial tag. */
+        private static final long serialVersionUID = -7895800483021015063L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            TreePath path = spriteModelJTree.getSelectionPath();
+            LOG.debug("Delete tree node at path " + path);
+
+            treeModelAdapter.deleteObjectAtPath(path);
+
+            refreshTree();
+        }
+    };
 
     /**
      * Creates a sprite set panel.
@@ -154,8 +177,13 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
         JPanel animationPanel = new JPanel();
 
         animationPanel.setLayout(new BorderLayout());
-        tSpriteModel = new JTree(DUMMY_MODEL);
-        add(tSpriteModel, BorderLayout.WEST);
+        spriteModelJTree = new JTree(DUMMY_MODEL);
+        add(spriteModelJTree, BorderLayout.WEST);
+
+        JPopupMenu spriteModelPopupMenu = new JPopupMenu("Node");
+        JMenuItem deleteNodeMenuItem = new JMenuItem(deleteNodeAction);
+        spriteModelPopupMenu.add(deleteNodeMenuItem);
+        spriteModelJTree.setComponentPopupMenu(spriteModelPopupMenu);
 
         spriteAnimationPanel = new SpriteAnimationPanel(350, 800);
         animationPanel.add(spriteAnimationPanel, BorderLayout.CENTER);
@@ -187,6 +215,15 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
         add(animationPanel, BorderLayout.EAST);
     }
 
+    /** Refresh the sprite model tree. */
+    protected void refreshTree() {
+        
+        // TODO for the moment, we recreate a new tree model, see how to improve
+        treeModelAdapter = new TreeModelAdapter(spriteModel);
+        spriteModelJTree.setModel(treeModelAdapter);
+        repaint();
+    }
+
     /** Register sprites. */
     private void registerSprites() {
         spriteModel.registerSprites();
@@ -198,12 +235,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         spriteGridPanel.setModel(spriteModel);
 
-        // TODO works but maybe to improve to prevent the whole reconstruction
-        // of the tree model
-        treeModelAdapter = new TreeModelAdapter(spriteModel);
-        tSpriteModel.setModel(treeModelAdapter);
-
-        repaint();
+        refreshTree();
     }
 
     /**
@@ -216,10 +248,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
         if (rect != null) {
             spriteModel.addRectangle(rect);
 
-            // TODO works but maybe to improve to prevent the whole
-            // reconstruction of the tree model
-            tSpriteModel.setModel(new TreeModelAdapter(spriteModel));
-
+            refreshTree();
         }
     }
 
@@ -232,7 +261,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
         spriteAnimationPanel.setSpriteModel(spriteModel);
 
         treeModelAdapter = new TreeModelAdapter(spriteModel);
-        tSpriteModel.setModel(treeModelAdapter);
+        spriteModelJTree.setModel(treeModelAdapter);
 
         spriteGridPanel.setModel(spriteModel);
 
