@@ -1,6 +1,6 @@
 package io.github.purpleloop.gameengine.workshop.ui.sprites;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -107,11 +107,9 @@ public class SpriteGridIndexPanel extends JPanel implements ChangeListener {
 
         formLoaded = false;
 
-        List<IndexedSpriteSet> indexes = spriteModel.getIndexes();
-        if (indexes.size() > 0) {
-
-            // FIXME must get the selected index here
-            IndexedSpriteSet index = indexes.get(0);
+        Optional<IndexedSpriteSet> indexOpt = spriteSetEditorPanel.getSelectedSpriteIndex();
+        if (indexOpt.isPresent()) {
+            IndexedSpriteSet index = indexOpt.get();
             if (index instanceof SpriteGridIndex) {
                 modelToForm(index);
             }
@@ -136,11 +134,9 @@ public class SpriteGridIndexPanel extends JPanel implements ChangeListener {
     @Override
     public void stateChanged(ChangeEvent e) {
 
-        List<IndexedSpriteSet> indexes = spriteModel.getIndexes();
-        if (indexes.size() > 0) {
-
-            // FIXME manage index selection here
-            IndexedSpriteSet index = indexes.get(0);
+        Optional<IndexedSpriteSet> indexOpt = spriteSetEditorPanel.getSelectedSpriteIndex();
+        if (indexOpt.isPresent()) {
+            IndexedSpriteSet index = indexOpt.get();
             if (formLoaded && index instanceof SpriteGridIndex) {
                 formToModel(index);
             }

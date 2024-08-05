@@ -61,6 +61,9 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     /** Rectangle. */
     private Rectangle2D selectedElementRectangle;
 
+    /** The editor panel. */
+    private SpriteSetEditorPanel spriteSetEditorPanel;
+
     /** Mouse location. */
     private Point mouseLoc;
 
@@ -115,11 +118,14 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     /**
      * Constructor of the panel.
      * 
+     * @param spriteSetEditorPanel the editor panel
      * @param statusObserver the status observer
      */
-    public SpriteSourcePanel(StatusObserver statusObserver) {
+    public SpriteSourcePanel(SpriteSetEditorPanel spriteSetEditorPanel,
+            StatusObserver statusObserver) {
         super();
 
+        this.spriteSetEditorPanel=spriteSetEditorPanel;
         this.statusObserver = statusObserver;
 
         addMouseMotionListener(this);
@@ -135,62 +141,71 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     @Override
     public void paint(Graphics graphics) {
 
-        Graphics2D graphics2d = (Graphics2D) graphics;
-
         graphics.setColor(Color.BLACK);
         graphics.fillRect(0, 0, WIDTH, HEIGHT);
 
         if (spriteModel == null) {
 
             graphics.setColor(Color.LIGHT_GRAY);
-
             graphics.drawString(
                     "No sprite model is configured. You can create a new sprite model or open an existing one.",
                     50, 50);
 
         } else {
+            paintSpriteModel((Graphics2D) graphics);
+        }
 
-            graphics.drawImage(spriteModel.getImage(), 0, 0, this);
+    }
 
-            for (IndexedSpriteSet spriteIndex : spriteModel.getIndexes()) {
+    /**
+     * Paints the sprite model.
+     * 
+     * @param graphics the graphic where to paint
+     */
+    private void paintSpriteModel(Graphics2D graphics) {
 
-                if (spriteIndex instanceof SpriteGridIndex) {
+        graphics.drawImage(spriteModel.getImage(), 0, 0, this);
 
-                    SpriteGridIndex spriteGridIndex = (SpriteGridIndex) spriteIndex;
+        for (IndexedSpriteSet spriteIndex : spriteModel.getIndexes()) {
 
-                    graphics2d.setColor(Color.GREEN);
-                    Rectangle2D rc = new Rectangle2D.Double(0, 0, 1, 1);
-                    for (int indexValue = 0; indexValue < spriteGridIndex
-                            .getSpritesCount(); indexValue++) {
+            Optional<IndexedSpriteSet> indexesSpriteSetOpt = spriteSetEditorPanel.getSelectedSpriteIndex();
+            
+            if (indexesSpriteSetOpt.isPresent() && spriteIndex == indexesSpriteSetOpt.get()
+                    && spriteIndex instanceof SpriteGridIndex) {
 
-                        int x = spriteIndex.getX(indexValue);
-                        int y = spriteIndex.getY(indexValue);
-                        rc.setRect(x, y, spriteIndex.getWidth(indexValue),
-                                spriteIndex.getHeight(indexValue));
+                SpriteGridIndex spriteGridIndex = (SpriteGridIndex) spriteIndex;
 
-                        // Draw the cell rectangle
-                        graphics2d.draw(rc);
+                graphics.setColor(Color.GREEN);
+                Rectangle2D rc = new Rectangle2D.Double(0, 0, 1, 1);
+                for (int indexValue = 0; indexValue < spriteGridIndex
+                        .getSpritesCount(); indexValue++) {
 
-                        // Draw the index of the cell
-                        graphics2d.drawString(Integer.toString(indexValue), x + 2, y + 11);
-                    }
+                    int x = spriteIndex.getX(indexValue);
+                    int y = spriteIndex.getY(indexValue);
+                    rc.setRect(x, y, spriteIndex.getWidth(indexValue),
+                            spriteIndex.getHeight(indexValue));
 
+                    // Draw the cell rectangle
+                    graphics.draw(rc);
+
+                    // Draw the index of the cell
+                    graphics.drawString(Integer.toString(indexValue), x + 2, y + 11);
                 }
 
             }
 
-            if (selectedElementRectangle != null) {
-                graphics2d.setColor(Color.RED);
-                graphics2d.draw(selectedElementRectangle);
-            }
-
-            if (selectionRectangle != null) {
-                graphics2d.setColor(Color.PINK);
-                graphics2d.draw(selectionRectangle);
-
-            }
         }
 
+        if (selectedElementRectangle != null) {
+            graphics.setColor(Color.RED);
+            graphics.draw(selectedElementRectangle);
+        }
+
+        if (selectionRectangle != null) {
+            graphics.setColor(Color.PINK);
+            graphics.draw(selectionRectangle);
+
+        }
     }
 
     @Override

@@ -1,7 +1,8 @@
-package io.github.purpleloop.gameengine.workshop.ui;
+package io.github.purpleloop.gameengine.workshop.ui.sprites;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -192,6 +193,25 @@ public class TreeModelAdapter implements TreeModel {
 
         IndexedSpriteSet nodeToRemove = (IndexedSpriteSet) pathElements[2];
         spriteModel.removeIndex(nodeToRemove);
+    }
+
+    /**
+     * Handles the selection of a path in the tree model.
+     * 
+     * @return optional selection
+     */
+    public Optional<IndexedSpriteSet> selectPath(TreePath path) {
+
+        Object[] pathElements = path.getPath();
+
+        // TODO Currently only selection of an index is implemented
+        if (pathElements.length != 3 || pathElements[0] != SPRITE_MODEL_NODE
+                || pathElements[1] != INDEXES_NODE) {
+            return Optional.empty();
+        }
+
+        IndexedSpriteSet selectedIndex = (IndexedSpriteSet) pathElements[2];
+        return Optional.of(selectedIndex);
     }
 
 }

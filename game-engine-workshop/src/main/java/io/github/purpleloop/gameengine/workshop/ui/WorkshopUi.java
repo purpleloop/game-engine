@@ -112,27 +112,7 @@ public class WorkshopUi extends JFrame implements StatusObserver {
     };
 
     /** A filter for sprite images. */
-    private FileFilter imageFilter = new FileFilter() {
-
-        @Override
-        public String getDescription() {
-            return "Sprite source images";
-        }
-
-        @Override
-        public boolean accept(File f) {
-            String[] supportedSuffixes = ImageIO.getReaderFileSuffixes();
-
-            boolean supported = false;
-
-            String absolutePath = f.getAbsolutePath();
-            for (String supportedSuffix : supportedSuffixes) {
-                supported |= absolutePath.endsWith(supportedSuffix);
-            }
-
-            return f.isDirectory() || supported;
-        }
-    };
+    private FileFilter imageFilter = new ImageFileFilter();
 
     /** Constructor of the workshop frame. */
     public WorkshopUi() {

@@ -6,9 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.net.URL;
+import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,6 +25,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
@@ -30,10 +34,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import io.github.purpleloop.commons.swing.sprites.model.IndexedSpriteSet;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteGridIndex;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
 import io.github.purpleloop.gameengine.workshop.ui.StatusObserver;
-import io.github.purpleloop.gameengine.workshop.ui.TreeModelAdapter;
 import io.github.purpleloop.gameengine.workshop.ui.sprites.SpriteSourcePanel.IndexSelectionListener;
 
 /**
@@ -54,8 +58,8 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     /** Command to stop paying the animation. */
     private static final String CMD_STOP = "CMD_STOP";
 
-    /** The tree model. */
-    private static final TreeModel DUMMY_MODEL = new TreeModel() {
+    /** An empty tree model - for initialization. */
+    private static final TreeModel EMPTY_MODEL = new TreeModel() {
 
         @Override
         public void valueForPathChanged(TreePath path, Object newValue) {
@@ -101,6 +105,9 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     /** Command to add a grid index. */
     private static final String CMD_ADD_GRID_INDEX = "CMD_ADD_GRID_INDEX";
 
+    /** The selected sprite index, optional. */
+    private Optional<IndexedSpriteSet> selectedSpriteIndex = Optional.empty();
+
     /** The currently selected index. */
     private int selectedIndex;
 
@@ -115,6 +122,9 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
     /** View of the sprite model structure represented as a JTree. */
     private JTree spriteModelJTree;
+    
+    /** An editor for the source image. */
+    private SpriteImageSourcePanel spriteImageSourcePanel;
 
     /** An editor for a sprite grid index. */
     private SpriteGridIndexPanel spriteGridPanel;
@@ -149,23 +159,8 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         setLayout(new BorderLayout());
 
-        spriteSourcePanel = new SpriteSourcePanel(statusObserver);
+        spriteSourcePanel = new SpriteSourcePanel(this, statusObserver);
         spriteSourcePanel.setSpriteIndexListener(this);
-
-        spriteGridPanel = new SpriteGridIndexPanel(this);
-
-        JToolBar tbSpriteSheet = new JToolBar(JToolBar.HORIZONTAL);
-
-        createToolButton("", CMD_DEFINE_RECTANGLE, "Define a rectangle", "Rect", tbSpriteSheet,
-                e -> defineRectangle());
-        createToolButton("", CMD_ADD_GRID_INDEX, "Add a grid index", "Grid", tbSpriteSheet,
-                e -> defineGridIndex());
-        createToolButton("", CMD_ADD_GRID_INDEX, "Register sprites", "Register", tbSpriteSheet,
-                e -> registerSprites());
-
-        add(tbSpriteSheet, BorderLayout.NORTH);
-
-        add(spriteGridPanel, BorderLayout.SOUTH);
 
         JScrollPane scrollPane = new JScrollPane(spriteSourcePanel,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -173,12 +168,37 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         scrollPane.setBackground(Color.BLACK);
         add(scrollPane, BorderLayout.CENTER);
+             
+        JPanel editionPanel = new JPanel();
+        editionPanel.setLayout(new BoxLayout(editionPanel, BoxLayout.Y_AXIS));
+        add(editionPanel, BorderLayout.NORTH);
+        
+        JToolBar tbSpriteSheet = new JToolBar(JToolBar.HORIZONTAL);
+        
+        createToolButton("", CMD_DEFINE_RECTANGLE, "Define a rectangle", "Rect", tbSpriteSheet,
+                e -> defineRectangle());
+        createToolButton("", CMD_ADD_GRID_INDEX, "Add a grid index", "Grid", tbSpriteSheet,
+                e -> defineGridIndex());
+        createToolButton("", CMD_ADD_GRID_INDEX, "Register sprites", "Register", tbSpriteSheet,
+                e -> registerSprites());
+
+        editionPanel.add(tbSpriteSheet);
+
+        spriteImageSourcePanel = new SpriteImageSourcePanel();  
+        
+        editionPanel.add(spriteImageSourcePanel);
+        
+        spriteGridPanel = new SpriteGridIndexPanel(this);
+        editionPanel.add(spriteGridPanel);
 
         JPanel animationPanel = new JPanel();
 
         animationPanel.setLayout(new BorderLayout());
-        spriteModelJTree = new JTree(DUMMY_MODEL);
+
+        spriteModelJTree = new JTree(EMPTY_MODEL);
         add(spriteModelJTree, BorderLayout.WEST);
+
+        spriteModelJTree.addTreeSelectionListener(e -> handleTreeSelection(e.getPath()));
 
         JPopupMenu spriteModelPopupMenu = new JPopupMenu("Node");
         JMenuItem deleteNodeMenuItem = new JMenuItem(deleteNodeAction);
@@ -217,7 +237,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
     /** Refresh the sprite model tree. */
     protected void refreshTree() {
-        
+
         // TODO for the moment, we recreate a new tree model, see how to improve
         treeModelAdapter = new TreeModelAdapter(spriteModel);
         spriteModelJTree.setModel(treeModelAdapter);
@@ -256,7 +276,8 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     public void setSpriteModel(SpriteModel spriteModel) {
 
         this.spriteModel = spriteModel;
-
+        
+        spriteImageSourcePanel.setSpriteModel(spriteModel);
         spriteSourcePanel.setSpriteModel(spriteModel);
         spriteAnimationPanel.setSpriteModel(spriteModel);
 
@@ -324,6 +345,27 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     /** @return the sprite model */
     public SpriteModel getSpriteModel() {
         return spriteModel;
+    }
+
+    /**
+     * Handles a selection in the sprite model tree.
+     * 
+     * @param path the selected path
+     */
+    protected void handleTreeSelection(TreePath path) {
+        LOG.debug("Selection made in the sprite model tree " + path);
+        selectedSpriteIndex = treeModelAdapter.selectPath(path);
+
+        if (selectedSpriteIndex.isPresent()) {
+            spriteGridPanel.setModel(spriteModel);
+        }
+
+        repaint();
+    }
+
+    /** @return The selected sprite index, optional */
+    public Optional<IndexedSpriteSet> getSelectedSpriteIndex() {
+        return selectedSpriteIndex;
     }
 
 }
