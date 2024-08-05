@@ -25,8 +25,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
@@ -38,6 +36,7 @@ import io.github.purpleloop.commons.swing.sprites.model.IndexedSpriteSet;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteGridIndex;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
 import io.github.purpleloop.gameengine.workshop.ui.StatusObserver;
+import io.github.purpleloop.gameengine.workshop.ui.context.WorkshopContext;
 import io.github.purpleloop.gameengine.workshop.ui.sprites.SpriteSourcePanel.IndexSelectionListener;
 
 /**
@@ -105,6 +104,9 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     /** Command to add a grid index. */
     private static final String CMD_ADD_GRID_INDEX = "CMD_ADD_GRID_INDEX";
 
+    /** The workshop context. */
+    private WorkshopContext workshopContext;
+
     /** The selected sprite index, optional. */
     private Optional<IndexedSpriteSet> selectedSpriteIndex = Optional.empty();
 
@@ -122,7 +124,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
     /** View of the sprite model structure represented as a JTree. */
     private JTree spriteModelJTree;
-    
+
     /** An editor for the source image. */
     private SpriteImageSourcePanel spriteImageSourcePanel;
 
@@ -153,9 +155,13 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     /**
      * Creates a sprite set panel.
      * 
+     * @param workshopContext the workshop context
+     * 
      * @param statusObserver the status observer
      */
-    public SpriteSetEditorPanel(StatusObserver statusObserver) {
+    public SpriteSetEditorPanel(WorkshopContext workshopContext, StatusObserver statusObserver) {
+
+        this.workshopContext = workshopContext;
 
         setLayout(new BorderLayout());
 
@@ -168,13 +174,13 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         scrollPane.setBackground(Color.BLACK);
         add(scrollPane, BorderLayout.CENTER);
-             
+
         JPanel editionPanel = new JPanel();
         editionPanel.setLayout(new BoxLayout(editionPanel, BoxLayout.Y_AXIS));
         add(editionPanel, BorderLayout.NORTH);
-        
+
         JToolBar tbSpriteSheet = new JToolBar(JToolBar.HORIZONTAL);
-        
+
         createToolButton("", CMD_DEFINE_RECTANGLE, "Define a rectangle", "Rect", tbSpriteSheet,
                 e -> defineRectangle());
         createToolButton("", CMD_ADD_GRID_INDEX, "Add a grid index", "Grid", tbSpriteSheet,
@@ -184,10 +190,10 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         editionPanel.add(tbSpriteSheet);
 
-        spriteImageSourcePanel = new SpriteImageSourcePanel();  
-        
+        spriteImageSourcePanel = new SpriteImageSourcePanel();
+
         editionPanel.add(spriteImageSourcePanel);
-        
+
         spriteGridPanel = new SpriteGridIndexPanel(this);
         editionPanel.add(spriteGridPanel);
 
@@ -276,7 +282,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     public void setSpriteModel(SpriteModel spriteModel) {
 
         this.spriteModel = spriteModel;
-        
+
         spriteImageSourcePanel.setSpriteModel(spriteModel);
         spriteSourcePanel.setSpriteModel(spriteModel);
         spriteAnimationPanel.setSpriteModel(spriteModel);
@@ -286,6 +292,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         spriteGridPanel.setModel(spriteModel);
 
+        workshopContext.store("spriteModel", spriteModel);
     }
 
     @Override

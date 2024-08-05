@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
@@ -31,6 +30,9 @@ import io.github.purpleloop.commons.swing.SwingUtils;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
 import io.github.purpleloop.gameengine.workshop.Preferences;
 import io.github.purpleloop.gameengine.workshop.ui.config.JConfigPanel;
+import io.github.purpleloop.gameengine.workshop.ui.context.DefaultWorkshopContext;
+import io.github.purpleloop.gameengine.workshop.ui.context.WorkshopContext;
+import io.github.purpleloop.gameengine.workshop.ui.map.MapEditorPanel;
 import io.github.purpleloop.gameengine.workshop.ui.sprites.SpriteSetEditorPanel;
 
 /** Main frame of the game engine workshop. */
@@ -93,6 +95,9 @@ public class WorkshopUi extends JFrame implements StatusObserver {
 
     /** The sprite sheet editor panel. */
     private SpriteSetEditorPanel spriteSetEditorPanel;
+    
+    /** The map editor panel. */
+    private MapEditorPanel mapEditorPanel;
 
     /** The user preference. */
     private Preferences preferences;
@@ -114,13 +119,19 @@ public class WorkshopUi extends JFrame implements StatusObserver {
     /** A filter for sprite images. */
     private FileFilter imageFilter = new ImageFileFilter();
 
+    /** The workshop context. */
+    private WorkshopContext context;
+
     /** Constructor of the workshop frame. */
     public WorkshopUi() {
         super("Game Engine Workshop");
+        
+        this.context = new DefaultWorkshopContext();
 
         LOG.debug("Creates the main frame.");
 
         preferences = new Preferences();
+        this.context.store("preferences", preferences);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -137,8 +148,12 @@ public class WorkshopUi extends JFrame implements StatusObserver {
 
         JTabbedPane tabPane = new JTabbedPane();
 
-        spriteSetEditorPanel = new SpriteSetEditorPanel(this);
+        spriteSetEditorPanel = new SpriteSetEditorPanel(this.context, this);
         tabPane.add(spriteSetEditorPanel, "SpriteSet editor");
+        
+        mapEditorPanel= new MapEditorPanel(this.context);
+        
+        tabPane.add(mapEditorPanel, "Map editor");
         tabPane.add(new JConfigPanel(), "Configuration editor");
         mainPanel.add(tabPane, BorderLayout.CENTER);
 
