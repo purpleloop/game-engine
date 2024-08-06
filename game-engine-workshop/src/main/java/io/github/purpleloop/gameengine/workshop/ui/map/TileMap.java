@@ -17,4 +17,35 @@ public class TileMap {
         tiles = new String[width][height];
     }
 
+    /** @return Width of the map */
+    public int getWidth() {
+        return width;
+    }
+
+    /** @return Height of the map */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * @param x abscissa of the tile
+     * @param y ordinate of the tile
+     * @return the tile name or null
+     */
+    public String getTile(int x, int y) {
+        return tiles[x][y];
+    }
+
+    /**
+     * Sets the tile at given coordinates.
+     * 
+     * @param x abscissa of the tile
+     * @param y ordinate of the tile
+     * @param tileName the tile name or null
+     */
+    public void setTile(int x, int y, String tileName) {
+        tiles[x][y] = tileName;
+
+    }
+
 }

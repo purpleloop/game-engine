@@ -37,13 +37,14 @@ import io.github.purpleloop.commons.swing.sprites.model.SpriteGridIndex;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
 import io.github.purpleloop.gameengine.workshop.ui.StatusObserver;
 import io.github.purpleloop.gameengine.workshop.ui.context.WorkshopContext;
+import io.github.purpleloop.gameengine.workshop.ui.context.WorkshopPanel;
 import io.github.purpleloop.gameengine.workshop.ui.sprites.SpriteSourcePanel.IndexSelectionListener;
 
 /**
  * A panel for editing a sprite set. It is composed of an image source panel and
  * of an animation panel.
  */
-public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListener {
+public class SpriteSetEditorPanel extends WorkshopPanel implements IndexSelectionListener {
 
     /** Serialization tag. */
     private static final long serialVersionUID = -8549388832219503324L;
@@ -104,9 +105,6 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
     /** Command to add a grid index. */
     private static final String CMD_ADD_GRID_INDEX = "CMD_ADD_GRID_INDEX";
 
-    /** The workshop context. */
-    private WorkshopContext workshopContext;
-
     /** The selected sprite index, optional. */
     private Optional<IndexedSpriteSet> selectedSpriteIndex = Optional.empty();
 
@@ -161,7 +159,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
      */
     public SpriteSetEditorPanel(WorkshopContext workshopContext, StatusObserver statusObserver) {
 
-        this.workshopContext = workshopContext;
+        super(workshopContext);
 
         setLayout(new BorderLayout());
 
@@ -292,7 +290,7 @@ public class SpriteSetEditorPanel extends JPanel implements IndexSelectionListen
 
         spriteGridPanel.setModel(spriteModel);
 
-        workshopContext.store("spriteModel", spriteModel);
+        store("spriteModel", spriteModel);
     }
 
     @Override

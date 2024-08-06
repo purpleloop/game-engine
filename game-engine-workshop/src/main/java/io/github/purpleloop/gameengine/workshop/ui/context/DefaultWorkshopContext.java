@@ -17,7 +17,7 @@ public class DefaultWorkshopContext implements WorkshopContext {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Optional<T> get(String name) {
+    public <T> Optional<T> retrieve(String name) {
         return Optional.ofNullable((T) storage.get(name));
     }
 

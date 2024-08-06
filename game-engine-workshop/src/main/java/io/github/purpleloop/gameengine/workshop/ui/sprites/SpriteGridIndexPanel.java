@@ -43,9 +43,6 @@ public class SpriteGridIndexPanel extends JPanel implements ChangeListener {
     /** Vertical spacing between sprites. */
     private JSpinner paddingYTf;
 
-    /** The sprite model associated to this panel. */
-    private SpriteModel spriteModel;
-
     /** Has the form been loaded (says if the panel can change the model). */
     private boolean formLoaded = false;
 
@@ -103,7 +100,6 @@ public class SpriteGridIndexPanel extends JPanel implements ChangeListener {
     }
 
     public void setModel(SpriteModel spriteModel) {
-        this.spriteModel = spriteModel;
 
         formLoaded = false;
 

@@ -11,7 +11,7 @@ public interface WorkshopContext {
      */
     <T> void store(String name, T object);
 
-    /** Get an object by it's name if it exists in the context, optional */
-    <T> Optional<T> get(String name);
+    /** Retrieve an object by it's name if it exists in the context, optional */
+    <T> Optional<T> retrieve(String name);
 
 }
