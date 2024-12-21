@@ -13,7 +13,7 @@ module io.github.purpleloop.gameengine.action {
     exports io.github.purpleloop.gameengine.action.model;    
     
     requires java.xml;
-    requires commons.logging;
+    requires org.apache.commons.logging;
     requires org.apache.commons.lang3;
     requires transitive io.github.purpleloop.commons;
     requires transitive io.github.purpleloop.commons.swing;

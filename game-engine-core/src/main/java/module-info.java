@@ -9,7 +9,7 @@ module io.github.purpleloop.gameengine.core {
 	
 	requires transitive io.github.purpleloop.commons;
 	requires transitive io.github.purpleloop.commons.swing;
-	requires commons.logging;
 	requires java.xml;
+	requires org.apache.commons.logging;
 	requires org.apache.commons.lang3;
 }

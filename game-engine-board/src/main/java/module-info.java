@@ -8,7 +8,7 @@ module io.github.purpleloop.gameengine.board {
     
     requires java.xml;
     requires org.apache.commons.lang3;
-    requires commons.logging;
+    requires org.apache.commons.logging;
     requires transitive io.github.purpleloop.commons;
     requires transitive io.github.purpleloop.commons.swing;
     requires transitive io.github.purpleloop.gameengine.network;
