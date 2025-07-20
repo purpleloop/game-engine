@@ -32,7 +32,7 @@
 		<purple-commons.version>1.0.0-SNAPSHOT</purple-commons.version>
 		<purple-commons-swing.version>1.0.0-SNAPSHOT</purple-commons-swing.version>
 		<log4j.version>2.24.3</log4j.version>
-		<commons-lang.version>3.17.0</commons-lang.version>
+		<commons-lang.version>3.18.0</commons-lang.version>
 		<junit.version>5.11.4</junit.version>
 	</properties>
 
