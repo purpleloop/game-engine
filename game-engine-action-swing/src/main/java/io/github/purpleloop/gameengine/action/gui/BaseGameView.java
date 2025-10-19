@@ -1,5 +1,7 @@
 package io.github.purpleloop.gameengine.action.gui;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -14,85 +16,93 @@ import io.github.purpleloop.gameengine.action.model.interfaces.ISession;
 import io.github.purpleloop.gameengine.core.config.GameConfig;
 import io.github.purpleloop.gameengine.core.config.IDataFileProvider;
 
-/** Abstract base implementation of the game view. */
-public abstract class BaseGameView implements IGameView {
+/** Base implementation of the game view. */
+public class BaseGameView implements IGameView {
 
-	/** Class logger. */
-	public static final Log LOG = LogFactory.getLog(BaseGameView.class);
+    /** Class logger. */
+    public static final Log LOG = LogFactory.getLog(BaseGameView.class);
 
-	/** The sprite engine used to provide sprites. */
-	private SpriteEngine spriteEngine;
+    /** The sprite engine used to provide sprites. */
+    private SpriteEngine spriteEngine;
 
-	/** Should we display debug information ? */
-	private boolean debugInfo = false;
+    /** Should we display debug information ? */
+    private boolean debugInfo = false;
 
-	/** The configuration of the game. */
-	private GameConfig config;
+    /** The configuration of the game. */
+    private GameConfig config;
 
-	/** The main panel used to render the game view. */
-	private GamePanel ownerPanel;
+    /** The main panel used to render the game view. */
+    private GamePanel ownerPanel;
 
-	/** The default font used to display text. */
-	private Font normalFont;
+    /** The default font used to display text. */
+    private Font normalFont;
 
-	/** Information of the current game session. */
-	private ISession currentSession;
+    /** Information of the current game session. */
+    private ISession currentSession;
 
-	/**
-	 * Creates a view for the game.
-	 * 
-	 * @param owner the GamePanel associated to this view
-	 * @param conf  the game configuration
-	 */
-	public BaseGameView(GamePanel owner, GameConfig conf) {
-		this.ownerPanel = owner;
-		this.config = conf;
-		this.spriteEngine = new SpriteEngineImpl();
-	}
+    /**
+     * Creates a view for the game.
+     * 
+     * @param conf the game configuration
+     * @param dataFileProvider the data provider from files
+     * @param owner the GamePanel associated to this view
+     */
+    public BaseGameView(GameConfig conf, IDataFileProvider dataFileProvider, GamePanel owner) {
+        this.ownerPanel = owner;
+        this.config = conf;
+        this.spriteEngine = new SpriteEngineImpl();
+    }
 
-	/**
-	 * Loads the game sprites.
-	 * 
-	 * @param conf the game configuration
-	 * @param dfp  the data file provider
-	 */
-	protected final void loadSpritesSource(GameConfig conf, IDataFileProvider dfp) {
-		spriteEngine.loadSpritesSource(conf, dfp);
-	}
+    @Override
+    public Dimension getPreferredSize() {
 
-	/** {@inheritDoc} */
-	public final boolean isDebugInfo() {
-		return debugInfo;
-	}
+        LOG.info("Using the default BaseGameView dimensions");
+        return new Dimension(500, 200);
+    }
 
-	/** {@inheritDoc} */
-	public final void setDebugInfo(boolean active) {
-		debugInfo = active;
-	}
+    /**
+     * Loads the game sprites.
+     * 
+     * @param conf the game configuration
+     * @param dfp the data file provider
+     */
+    protected final void loadSpritesSource(GameConfig conf, IDataFileProvider dfp) {
+        spriteEngine.loadSpritesSource(conf, dfp);
+    }
 
-	/** {@inheritDoc} */
-	public final void switchDebugInfo() {
-		this.debugInfo = !this.debugInfo;
+    /** {@inheritDoc} */
+    public final boolean isDebugInfo() {
+        return debugInfo;
+    }
 
-		LOG.debug("DebugInfo is : " + this.debugInfo);
-	}
+    /** {@inheritDoc} */
+    public final void setDebugInfo(boolean active) {
+        debugInfo = active;
+    }
 
-	/**
-	 * Displays a list of the available commands on the view.
-	 * 
-	 * @param g graphic context where to display the list
-	 */
-	public void listControls(Graphics g) {
+    /** {@inheritDoc} */
+    public final void switchDebugInfo() {
+        this.debugInfo = !this.debugInfo;
 
-		// Static key mapping controls
-		g.drawString("<ENTER> to start.", 50, 50);
-		g.drawString("<ESCAPE> to quit", 50, 70);
-		g.drawString("<I> to show debug info", 50, 90);
-		g.drawString("<P> for pause/unpause", 50, 110);
-		g.drawString("<S> for sound on/off", 50, 130);
+        LOG.debug("DebugInfo is : " + this.debugInfo);
+    }
 
-		// Dynamic key mapping controls
-		int x = 50;
+    /**
+     * Displays a list of the available commands on the view.
+     * 
+     * @param g graphic context where to display the list
+     */
+    public void listControls(Graphics g) {
+
+        // Static key mapping controls
+        g.drawString("<ENTER> to start.", 50, 50);
+        g.drawString("<ESCAPE> to quit", 50, 70);
+        g.drawString("<I> to show debug info", 50, 90);
+        g.drawString("<P> for pause/unpause", 50, 110);
+        g.drawString("<S> for sound on/off", 50, 130);
+
+        // Dynamic key mapping controls
+        int x = 50;
         int y = 150;
         for (Map.Entry<Integer, String> keyMapEntry : config.getKeyMap().entrySet()) {
 
@@ -101,83 +111,105 @@ public abstract class BaseGameView implements IGameView {
             y += 20;
         }
 
-	}
+    }
 
-	@Override
-	public final void paint(Graphics g) {
+    @Override
+    public final void paint(Graphics g) {
 
-		if (normalFont == null) {
-			normalFont = ownerPanel.getFont();
-			registerFonts(normalFont);
-		}
+        if (normalFont == null) {
+            normalFont = ownerPanel.getFont();
+            registerFonts(normalFont);
+        }
 
-		paintView(g);
-	}
+        paintView(g);
+    }
 
-	/**
-	 * Registers extra fonts.
-	 * 
-	 * @param normalFont the normal font to derive from
-	 */
-	protected void registerFonts(Font normalFont) {
-	}
+    /**
+     * Registers extra fonts.
+     * 
+     * @param normalFont the normal font to derive from
+     */
+    protected void registerFonts(Font normalFont) {
+    }
 
-	/** Register a sprite in the sprite engine.
-	 * @param spriteDescriptor the sprite description
-	 */
-	protected void registerSprite(Sprite spriteDescriptor) {
-		spriteEngine.registerSprite(spriteDescriptor);
-	}
+    /**
+     * Register a sprite in the sprite engine.
+     * 
+     * @param spriteDescriptor the sprite description
+     */
+    protected void registerSprite(Sprite spriteDescriptor) {
+        spriteEngine.registerSprite(spriteDescriptor);
+    }
 
-	/** Register a sprite in the sprite engine.
-	 * 
-	 * @param name         name of the sprite
-	 * @param xOrigin      Horizontal location of the sprite in the tile set
-	 * @param yOrigin      Vertical location of the sprite in the tile set
-	 * @param spriteWidth  sprite width
-	 * @param spriteHeight sprite height
-	 */
-	protected void registerSprite(String name, int xOrigin, int yOrigin, int spriteWidth, int spriteHeight) {
-		spriteEngine.registerSprite(new Sprite(name, xOrigin, yOrigin, spriteWidth, spriteHeight));
-	}
+    /**
+     * Register a sprite in the sprite engine.
+     * 
+     * @param name name of the sprite
+     * @param xOrigin Horizontal location of the sprite in the tile set
+     * @param yOrigin Vertical location of the sprite in the tile set
+     * @param spriteWidth sprite width
+     * @param spriteHeight sprite height
+     */
+    protected void registerSprite(String name, int xOrigin, int yOrigin, int spriteWidth,
+            int spriteHeight) {
+        spriteEngine.registerSprite(new Sprite(name, xOrigin, yOrigin, spriteWidth, spriteHeight));
+    }
 
-	/** Put a sprite on the graphic context.
-	 * @param g the graphic context
-	 * @param name the sprite name
-	 * @param xl abscissa
-	 * @param yl ordinate
-	 */
-	protected void putSprite(Graphics g, String name, int xl, int yl) {
-		spriteEngine.putSprite(g, ownerPanel, name, xl, yl);
-	}
+    /**
+     * Put a sprite on the graphic context.
+     * 
+     * @param g the graphic context
+     * @param name the sprite name
+     * @param xl abscissa
+     * @param yl ordinate
+     */
+    protected void putSprite(Graphics g, String name, int xl, int yl) {
+        spriteEngine.putSprite(g, ownerPanel, name, xl, yl);
+    }
 
-	/**
-	 * Paints the view on the graphic context.
-	 * 
-	 * @param g the graphic context
-	 */
-	protected abstract void paintView(Graphics g);
+    /**
+     * Paints the view on the graphic context.
+     * 
+     * @param g the graphic context
+     */
+    protected void paintView(Graphics g) {
 
-	/** Refresh the view. */
-	protected void repaint() {
-		
-		// Propagates to the panel
-		ownerPanel.repaint();
-	}
+        if (currentSession == null) {
+            paintWaitPage(g);
+        }
 
-	@Override
-	public void setSession(ISession session) {
-		currentSession = session;
-		repaint();
-	}
+    }
 
-	/** @return the current game session */
-	protected ISession getCurrentSession() {
-		return currentSession;
-	}
+    /**
+     * Paints the wait page.
+     * 
+     * @param g graphic context
+     */
+    protected void paintWaitPage(Graphics g) {
+        g.setColor(Color.GRAY);
+        listControls(g);
+    }
 
-	/** @return The default of the view. */
-	protected Font getNormalFont() {
-		return normalFont;
-	}
+    /** Refresh the view. */
+    protected void repaint() {
+
+        // Propagates to the panel
+        ownerPanel.repaint();
+    }
+
+    @Override
+    public void setSession(ISession session) {
+        currentSession = session;
+        repaint();
+    }
+
+    /** @return the current game session */
+    protected ISession getCurrentSession() {
+        return currentSession;
+    }
+
+    /** @return The default of the view. */
+    protected Font getNormalFont() {
+        return normalFont;
+    }
 }

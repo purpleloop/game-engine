@@ -27,6 +27,9 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
  */
 public class GameConfig implements ISoundFileResolver {
 
+    /** The default configuration filename. */
+    public static final String DEFAULT_CONFIG_FILE_NAME = "config.xml";
+
     /** Class logger. */
     private static Log log = LogFactory.getLog(GameConfig.class);
 
@@ -269,15 +272,37 @@ public class GameConfig implements ISoundFileResolver {
      * @throws EngineException in case of error
      */
     public String getClassName(ClassRole role) throws EngineException {
+        return getClassName(role, null);
+    }
 
-        String roleName = classes.get(role);
+    /**
+     * Get the class name for a given role.
+     * 
+     * @param role class role
+     * @param defaultClassNameForRole the nam of the default class for this
+     *            role, if specified
+     * @return class name
+     * @throws EngineException in case of error
+     */
+    public String getClassName(ClassRole role, String defaultClassNameForRole)
+            throws EngineException {
 
-        if (StringUtils.isEmpty(roleName)) {
-            throw new EngineException("The name of the class to load for the role " + role
-                    + " is missing in the game engine configuration.");
+        String classNameForRole = classes.get(role);
+
+        if (StringUtils.isEmpty(classNameForRole)) {
+
+            if (defaultClassNameForRole == null) {
+
+                throw new EngineException("The name of the class to load for the role " + role
+                        + " is missing in the game engine configuration, did you have a class definition for it in the config ?");
+            } else {
+
+                return defaultClassNameForRole;
+            }
+
         }
 
-        return classes.get(role);
+        return classNameForRole;
     }
 
     /**

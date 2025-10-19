@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import io.github.purpleloop.commons.exception.PurpleException;
 import io.github.purpleloop.commons.lang.ReflexivityTools;
 import io.github.purpleloop.commons.lang.ThreadObserver;
+import io.github.purpleloop.gameengine.action.gui.keyboard.KeyboardController;
 import io.github.purpleloop.gameengine.action.model.GameThread;
 import io.github.purpleloop.gameengine.action.model.interfaces.IController;
 import io.github.purpleloop.gameengine.action.model.interfaces.IDialogEngine;
@@ -17,6 +18,7 @@ import io.github.purpleloop.gameengine.action.model.interfaces.IGameView;
 import io.github.purpleloop.gameengine.action.model.interfaces.ISession;
 import io.github.purpleloop.gameengine.action.model.interfaces.ISessionEnvironment;
 import io.github.purpleloop.gameengine.action.model.level.ILevelManager;
+import io.github.purpleloop.gameengine.action.model.level.SingleLevelManager;
 import io.github.purpleloop.gameengine.action.model.session.SessionFactory;
 import io.github.purpleloop.gameengine.core.config.ClassRole;
 import io.github.purpleloop.gameengine.core.config.GameConfig;
@@ -123,7 +125,8 @@ public class ActionGameEngine implements IGameEngine, ThreadObserver {
         Object[] paramValues = new Object[1];
         paramValues[0] = this;
 
-        String className = config.getClassName(ClassRole.CONTROLLER);
+        String className = config.getClassName(ClassRole.CONTROLLER,
+                KeyboardController.class.getCanonicalName());
 
         LOG.debug("The game controller class is :" + className);
 
@@ -155,7 +158,8 @@ public class ActionGameEngine implements IGameEngine, ThreadObserver {
         paramValues[2] = ui.getGamePanel();
 
         try {
-            gameView = ReflexivityTools.createInstance(config.getClassName(ClassRole.VIEW),
+            gameView = ReflexivityTools.createInstance(
+                    config.getClassName(ClassRole.VIEW, BaseGameView.class.getCanonicalName()),
                     paramClasses, paramValues);
         } catch (PurpleException e) {
             throw new EngineException("Error while creating the game view.", e);
@@ -178,8 +182,9 @@ public class ActionGameEngine implements IGameEngine, ThreadObserver {
 
         try {
             levelManager = ReflexivityTools.createInstance(
-                    config.getClassName(ClassRole.LEVEL_PROVIDER), paramClassesLevelManager,
-                    paramValuesLevelManager);
+                    config.getClassName(ClassRole.LEVEL_PROVIDER,
+                            SingleLevelManager.class.getCanonicalName()),
+                    paramClassesLevelManager, paramValuesLevelManager);
         } catch (PurpleException e) {
             throw new EngineException("Error while creating the level manager.", e);
         }
