@@ -122,7 +122,20 @@ public class TreeModelAdapter implements TreeModel {
 
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
-        LOG.debug("Ignore value for path changed " + path + " " + newValue);
+
+        Object[] pathElements = path.getPath();
+
+        // Currently only changes of an index is implemented
+        if (pathElements.length != 3 || pathElements[0] != SPRITE_MODEL_NODE
+                || pathElements[1] != INDEXES_NODE) {
+            return;
+        }
+
+        LOG.debug("User changed index name on path " + path + " with " + newValue);
+
+        IndexedSpriteSet nodeToRename = (IndexedSpriteSet) pathElements[2];
+
+        nodeToRename.setId((String) newValue);
     }
 
     @Override

@@ -197,6 +197,7 @@ public class SpriteSetEditorPanel extends WorkshopPanel implements IndexSelectio
         animationPanel.setLayout(new BorderLayout());
 
         spriteModelJTree = new JTree(EMPTY_MODEL);
+        spriteModelJTree.setEditable(true);
         add(spriteModelJTree, BorderLayout.WEST);
 
         spriteModelJTree.addTreeSelectionListener(e -> handleTreeSelection(e.getPath()));
