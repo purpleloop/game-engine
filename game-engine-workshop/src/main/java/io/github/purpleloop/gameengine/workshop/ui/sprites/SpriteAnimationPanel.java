@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import io.github.purpleloop.commons.swing.sprites.exception.SpriteRenderingException;
+import io.github.purpleloop.commons.swing.sprites.model.IndexedSpriteSet;
 import io.github.purpleloop.commons.swing.sprites.model.SpriteModel;
 
 /** A panel used to show sprite animations. */
@@ -43,7 +44,7 @@ public class SpriteAnimationPanel extends JPanel {
     private double animationProgression;
 
     /** Current animation index. */
-    private int currentAnimationIndex = -1;
+    private IndexedSpriteSet currentAnimationIndex = null;
 
     /** The underlying sprite model. */
     private SpriteModel spriteModel;
@@ -93,7 +94,7 @@ public class SpriteAnimationPanel extends JPanel {
      * @param y abscissa for drawing the sprite
      */
     private void drawAnimatedSprite(Graphics graphics, int x, int y) {
-        if (currentAnimationIndex != -1) {
+        if (currentAnimationIndex != null) {
 
             LOG.debug("Animation index is " + currentAnimationIndex);
 
@@ -102,9 +103,8 @@ public class SpriteAnimationPanel extends JPanel {
                 int indexInSequence = Math.min((int) Math.floor(animationProgression * frameCount),
                         frameCount - 1);
 
-                int index = currentAnimationIndex + indexInSequence;
-
-                spriteModel.putSpriteForTime(graphics, this, index, x, y);
+                spriteModel.putSpriteForTime(graphics, this, currentAnimationIndex, indexInSequence,
+                        x, y);
             } catch (SpriteRenderingException e) {
                 LOG.error(e.getMessage());
             }
@@ -114,10 +114,10 @@ public class SpriteAnimationPanel extends JPanel {
     /**
      * Set the animation index.
      * 
-     * @param selectedIndex the selected index
+     * @param newAnimationIndex the index to animate
      */
-    public void setIndexToAnimate(int selectedIndex) {
-        this.currentAnimationIndex = selectedIndex;
+    public void setIndexToAnimate(IndexedSpriteSet newAnimationIndex) {
+        this.currentAnimationIndex = newAnimationIndex;
     }
 
     /** @param spriteModel the sprite model */
@@ -137,7 +137,7 @@ public class SpriteAnimationPanel extends JPanel {
             return;
         }
 
-        if (currentAnimationIndex == -1) {
+        if (currentAnimationIndex == null) {
             JOptionPane.showMessageDialog(this, "Please select an image as starting index first");
             return;
         }

@@ -108,9 +108,6 @@ public class SpriteSetEditorPanel extends WorkshopPanel implements IndexSelectio
     /** The selected sprite index, optional. */
     private Optional<IndexedSpriteSet> selectedSpriteIndex = Optional.empty();
 
-    /** The currently selected index. */
-    private int selectedIndex;
-
     /** The sprite animation panel. */
     private SpriteAnimationPanel spriteAnimationPanel;
 
@@ -255,9 +252,9 @@ public class SpriteSetEditorPanel extends WorkshopPanel implements IndexSelectio
 
     /** Add a new grid index to the model. */
     private void defineGridIndex() {
-        spriteModel.addIndex(new SpriteGridIndex(spriteModel.getNextId()));
+        spriteModel.addIndex(new SpriteGridIndex("SpriteGridIndex" + spriteModel.getNextId()));
 
-        spriteGridPanel.setModel(spriteModel);
+        spriteGridPanel.modelChanged();
 
         refreshTree();
     }
@@ -288,15 +285,14 @@ public class SpriteSetEditorPanel extends WorkshopPanel implements IndexSelectio
         treeModelAdapter = new TreeModelAdapter(spriteModel);
         spriteModelJTree.setModel(treeModelAdapter);
 
-        spriteGridPanel.setModel(spriteModel);
+        spriteGridPanel.modelChanged();
 
         store("spriteModel", spriteModel);
     }
 
     @Override
-    public void setSelectedSpriteIndex(int indexSprite) {
-        this.selectedIndex = indexSprite;
-        spriteAnimationPanel.setIndexToAnimate(selectedIndex);
+    public void setSelectedSpriteIndex(IndexedSpriteSet spriteIndex) {
+        spriteAnimationPanel.setIndexToAnimate(spriteIndex);
     }
 
     /**
@@ -362,7 +358,7 @@ public class SpriteSetEditorPanel extends WorkshopPanel implements IndexSelectio
         selectedSpriteIndex = treeModelAdapter.selectPath(path);
 
         if (selectedSpriteIndex.isPresent()) {
-            spriteGridPanel.setModel(spriteModel);
+            spriteGridPanel.modelChanged();
         }
 
         repaint();

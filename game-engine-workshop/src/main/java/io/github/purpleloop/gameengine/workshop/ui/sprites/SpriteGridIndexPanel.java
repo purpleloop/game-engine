@@ -99,7 +99,8 @@ public class SpriteGridIndexPanel extends JPanel implements ChangeListener {
         return spinner;
     }
 
-    public void setModel(SpriteModel spriteModel) {
+    /** Handles a change in the model. */
+    public void modelChanged() {
 
         formLoaded = false;
 

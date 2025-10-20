@@ -48,8 +48,8 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     /** Selection listener. */
     public interface IndexSelectionListener {
 
-        /** @param indexSprite the index of the selected sprite */
-        void setSelectedSpriteIndex(int indexSprite);
+        /** @param spriteIndex the selected SpriteIndex */
+        void setSelectedSpriteIndex(IndexedSpriteSet spriteIndex);
     }
 
     /** The selection listener. */
@@ -225,16 +225,16 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
             for (IndexedSpriteSet spriteIndex : spriteModel.getIndexes()) {
 
-                Optional<Integer> indexSpriteOptional = spriteIndex.getIndexFor(e.getPoint());
+                Optional<Integer> spriteNumberOptional = spriteIndex.getSpriteNumberForPoint(e.getPoint());
 
-                if (indexSpriteOptional.isPresent()) {
-                    int indexSprite = indexSpriteOptional.get();
-                    LOG.debug("Selected index => " + indexSprite);
-                    indexSelectionListener.setSelectedSpriteIndex(indexSprite);
+                if (spriteNumberOptional.isPresent()) {
+                    indexSelectionListener.setSelectedSpriteIndex(spriteIndex);
 
-                    selectedElementRectangle = new Rectangle2D.Double(spriteIndex.getX(indexSprite),
-                            spriteIndex.getY(indexSprite), spriteIndex.getWidth(indexSprite),
-                            spriteIndex.getHeight(indexSprite));
+                    int spriteNumber = spriteNumberOptional.get();
+                    LOG.debug("Selected sprite number is " + spriteNumber);
+                    selectedElementRectangle = new Rectangle2D.Double(spriteIndex.getX(spriteNumber),
+                            spriteIndex.getY(spriteNumber), spriteIndex.getWidth(spriteNumber),
+                            spriteIndex.getHeight(spriteNumber));
 
                     LOG.debug("Selected rectangle " + selectedElementRectangle);
                 }
