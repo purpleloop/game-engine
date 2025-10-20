@@ -19,124 +19,128 @@ import io.github.purpleloop.gameengine.core.util.EngineException;
  * local in space. It can be used for a given game level and during a game
  * session.
  * 
- * Current limit : An environment has a single controlled element. 
+ * Current limit : An environment has a single controlled element.
  * 
  * TODO more than one controllable agents, towards multi-player ?
  * 
  */
 public abstract class CommonAbstractEnvironment implements ISessionEnvironment {
 
-	/** The 'do nothing' action. */
-	public static final int ACTION_NONE = -1;
+    /** The 'do nothing' action. */
+    public static final int ACTION_NONE = -1;
 
-	/** The game session that serves as context for the environment. */
-	protected ISession session;
+    /** The game session that serves as context for the environment. */
+    protected ISession session;
 
-	/** A reusable random generator for this environment. */
-	protected Random random = new Random();
+    /** A reusable random generator for this environment. */
+    protected Random random = new Random();
 
-	/** Environment observers. */
-	private List<IEnvironmentObserver> environmentObservers;
+    /** Environment observers. */
+    private List<IEnvironmentObserver> environmentObservers;
 
-	/** The controlled element of the environment. */
-	private IControllable controlled;
-	
+    /** The controlled element of the environment. */
+    private IControllable controlled;
 
-	/**
-	 * Base constructor.
-	 * 
-	 * @param session session in which environment takes place
-	 */
-	protected CommonAbstractEnvironment(ISession session) {
-		this.session = session;
-		this.environmentObservers = new ArrayList<>();
-	}
+    /**
+     * Base constructor.
+     * 
+     * @param session session in which environment takes place
+     */
+    protected CommonAbstractEnvironment(ISession session) {
+        this.session = session;
+        this.environmentObservers = new ArrayList<>();
+    }
 
-	/**
-	 * Add an observer to the environment.
-	 * 
-	 * @param observer observer to add
-	 */
-	public final void addObserver(IEnvironmentObserver observer) {
+    /**
+     * Add an observer to the environment.
+     * 
+     * @param observer observer to add
+     */
+    public final void addObserver(IEnvironmentObserver observer) {
 
-		if (!environmentObservers.contains(observer)) {
-			environmentObservers.add(observer);
-		}
-	}
+        if (!environmentObservers.contains(observer)) {
+            environmentObservers.add(observer);
+        }
+    }
 
-	/**
-	 * Removes an observer from the environment.
-	 * 
-	 * @param observer observer to remove
-	 */
-	public final void removeObserver(IEnvironmentObserver observer) {
-		environmentObservers.remove(observer);
-	}
+    /**
+     * Removes an observer from the environment.
+     * 
+     * @param observer observer to remove
+     */
+    public final void removeObserver(IEnvironmentObserver observer) {
+        environmentObservers.remove(observer);
+    }
 
-	/**
-	 * Fires a notification of a change in the environment for all observers.
-	 * 
-	 * @param gameEvent the event causing the change
-	 */
-	protected final void fireEnvironmentChanged(IGameEvent gameEvent) {
-		for (IEnvironmentObserver observer : environmentObservers) {
-			observer.environmentChanged(gameEvent);
-		}
-	}
+    /**
+     * Fires a notification of a change in the environment for all observers.
+     * 
+     * @param gameEvent the event causing the change
+     */
+    protected final void fireEnvironmentChanged(IGameEvent gameEvent) {
+        for (IEnvironmentObserver observer : environmentObservers) {
+            observer.environmentChanged(gameEvent);
+        }
+    }
 
-	/**
-	 * Sets the controlled object of the environment. Currently, only a single
-	 * controllable is supported. The controlled object will receive actions
-	 * incoming from the controller.
-	 * 
-	 * @param controlled the controlled object
-	 * @throws EngineException in case of problem
-	 * 
-	 */
-	protected void setControlledElement(IControllable controlled) throws EngineException {
-		if (this.controlled != null) {
+    /**
+     * Sets the controlled object of the environment. Currently, only a single
+     * controllable is supported. The controlled object will receive actions
+     * incoming from the controller.
+     * 
+     * @param controlled the controlled object
+     * @throws EngineException in case of problem
+     * 
+     */
+    protected void setControlledElement(IControllable controlled) throws EngineException {
+        if (this.controlled != null) {
 
-			throw new EngineException("Controlled object is already set " + ", cannot change to " + controlled);
-		}
+            throw new EngineException(
+                    "Controlled object is already set " + ", cannot change to " + controlled);
+        }
 
-		this.controlled = controlled;
-	}
+        this.controlled = controlled;
+    }
 
-	@Override
-	public final void setController(IController controller) {
+    @Override
+    public final void setController(IController controller) {
 
-		registerControlListener(controller);
-		controller.registerControlListener(controlled);
-	}
+        registerControlListener(controller);
+        if (controlled != null) {
+            controller.registerControlListener(controlled);
+        }
+    }
 
-	@Override
-	public final void removeController(IController controller) {
-		unRegisterControlListener(controller);
-		controller.unRegisterControlListener(controlled);
-	}
+    @Override
+    public final void removeController(IController controller) {
+        unRegisterControlListener(controller);
+        if (controlled != null) {
+            controller.unRegisterControlListener(controlled);
+        }
+    }
 
-	/**
-	 * Do operations while registering a control listener.
-	 * 
-	 * @param controller the controller
-	 */
-	protected void registerControlListener(IController controller) {
-	}
+    /**
+     * Do operations while registering a control listener.
+     * 
+     * @param controller the controller
+     */
+    protected void registerControlListener(IController controller) {
+    }
 
-	/**
-	 * Unregister a control listener.
-	 * 
-	 * @param controller the controller
-	 */
-	protected void unRegisterControlListener(IController controller) {
-	}
+    /**
+     * Unregister a control listener.
+     * 
+     * @param controller the controller
+     */
+    protected void unRegisterControlListener(IController controller) {
+    }
 
-	/** @return the current controllable */
-	public IControllable getControllable() {
-		return this.controlled;
-	}
+    /** @return the current controllable */
+    public IControllable getControllable() {
+        return this.controlled;
+    }
 
-	@Override
+    @Override
     public void specificCleanUp() {
     }
 }
