@@ -32,6 +32,15 @@ public abstract class AbstractLinearSceneEnvironment extends AbstractObjectEnvir
     }
 
     /**
+     * Initializes the scene.
+     * 
+     * @param sceneWidth the scene width
+     */
+    protected void initScene(int sceneWidth) {
+        this.width = sceneWidth;
+    }
+
+    /**
      * Tests if an object within bounds of the scene environment.
      * 
      * @param x abscissa in base units
