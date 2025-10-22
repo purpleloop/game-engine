@@ -76,6 +76,9 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     /** Cached source image. */
     private Image cachedImage;
 
+    /** The background color. */
+    private Color backgroundColor = Color.BLUE;
+
     /** The keyboard controller used to adjust the grid. */
     private KeyListener gridKeyboardController = new KeyAdapter() {
 
@@ -125,7 +128,7 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
             StatusObserver statusObserver) {
         super();
 
-        this.spriteSetEditorPanel=spriteSetEditorPanel;
+        this.spriteSetEditorPanel = spriteSetEditorPanel;
         this.statusObserver = statusObserver;
 
         addMouseMotionListener(this);
@@ -141,7 +144,7 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
     @Override
     public void paint(Graphics graphics) {
 
-        graphics.setColor(Color.BLACK);
+        graphics.setColor(backgroundColor);
         graphics.fillRect(0, 0, WIDTH, HEIGHT);
 
         if (spriteModel == null) {
@@ -168,8 +171,9 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
         for (IndexedSpriteSet spriteIndex : spriteModel.getIndexes()) {
 
-            Optional<IndexedSpriteSet> indexesSpriteSetOpt = spriteSetEditorPanel.getSelectedSpriteIndex();
-            
+            Optional<IndexedSpriteSet> indexesSpriteSetOpt = spriteSetEditorPanel
+                    .getSelectedSpriteIndex();
+
             if (indexesSpriteSetOpt.isPresent() && spriteIndex == indexesSpriteSetOpt.get()
                     && spriteIndex instanceof SpriteGridIndex) {
 
@@ -225,15 +229,17 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
             for (IndexedSpriteSet spriteIndex : spriteModel.getIndexes()) {
 
-                Optional<Integer> spriteNumberOptional = spriteIndex.getSpriteNumberForPoint(e.getPoint());
+                Optional<Integer> spriteNumberOptional = spriteIndex
+                        .getSpriteNumberForPoint(e.getPoint());
 
                 if (spriteNumberOptional.isPresent()) {
                     indexSelectionListener.setSelectedSpriteIndex(spriteIndex);
 
                     int spriteNumber = spriteNumberOptional.get();
                     LOG.debug("Selected sprite number is " + spriteNumber);
-                    selectedElementRectangle = new Rectangle2D.Double(spriteIndex.getX(spriteNumber),
-                            spriteIndex.getY(spriteNumber), spriteIndex.getWidth(spriteNumber),
+                    selectedElementRectangle = new Rectangle2D.Double(
+                            spriteIndex.getX(spriteNumber), spriteIndex.getY(spriteNumber),
+                            spriteIndex.getWidth(spriteNumber),
                             spriteIndex.getHeight(spriteNumber));
 
                     LOG.debug("Selected rectangle " + selectedElementRectangle);
@@ -308,6 +314,21 @@ public class SpriteSourcePanel extends JPanel implements MouseMotionListener, Mo
 
         reset();
 
+    }
+
+    /**
+     * Changes the background color.
+     * 
+     * @param backgroundColor the new background color
+     */
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+        repaint();
+    }
+
+    /** @return the background color */
+    public Color getBackgroundColor() {
+        return this.backgroundColor;
     }
 
     /** Reset the panel. */

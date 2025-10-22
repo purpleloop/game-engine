@@ -187,6 +187,8 @@ public class SpriteSetEditorPanel extends WorkshopPanel implements IndexSelectio
 
         spriteImageSourcePanel = new SpriteImageSourcePanel();
 
+        spriteImageSourcePanel.setAssociatedSpriteSourcePanel(spriteSourcePanel);
+
         editionPanel.add(spriteImageSourcePanel);
 
         spriteGridPanel = new SpriteGridIndexPanel(this);

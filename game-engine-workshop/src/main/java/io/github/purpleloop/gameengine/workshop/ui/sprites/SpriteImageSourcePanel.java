@@ -1,8 +1,10 @@
 package io.github.purpleloop.gameengine.workshop.ui.sprites;
 
+import java.awt.Color;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,6 +34,9 @@ public class SpriteImageSourcePanel extends JPanel {
     /** A filter for sprite images. */
     private FileFilter imageFilter = new ImageFileFilter();
 
+    /** The associated SpriteSourcePanel for background color changes. */
+    private SpriteSourcePanel associatedSpriteSourcePanel;
+
     /** Constructor of the panel. */
     public SpriteImageSourcePanel() {
 
@@ -48,6 +53,10 @@ public class SpriteImageSourcePanel extends JPanel {
         fcImages = new JFileChooser(new File("."));
         fcImages.setDialogTitle("Select the source image");
         fcImages.setFileFilter(imageFilter);
+
+        JButton btChooseBgColor = new JButton("Choose background color");
+        btChooseBgColor.addActionListener(e -> chooseBackgroundColor());
+        add(btChooseBgColor);
 
     }
 
@@ -75,7 +84,30 @@ public class SpriteImageSourcePanel extends JPanel {
 
     }
 
-    /** Changes the sprite model.
+    /**
+     * Sets the associated SpriteSourcePanel.
+     * 
+     * @param spriteSourcePanel the SpriteSourcePanel
+     */
+    public void setAssociatedSpriteSourcePanel(SpriteSourcePanel spriteSourcePanel) {
+        this.associatedSpriteSourcePanel = spriteSourcePanel;
+    }
+
+    /** Choose a new background color. */
+    private void chooseBackgroundColor() {
+
+        Color selectedColor = JColorChooser.showDialog(this, "Choose background color",
+                associatedSpriteSourcePanel.getBackgroundColor());
+
+        if (selectedColor != null) {
+            associatedSpriteSourcePanel.setBackgroundColor(selectedColor);
+        }
+
+    }
+
+    /**
+     * Changes the sprite model.
+     * 
      * @param spriteModel the sprite model
      */
     public void setSpriteModel(SpriteModel spriteModel) {
