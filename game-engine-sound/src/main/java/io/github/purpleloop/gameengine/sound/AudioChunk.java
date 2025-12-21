@@ -78,7 +78,7 @@ public class AudioChunk {
 		} catch (FileNotFoundException e) {
 			log.error("The sound file is missing " + soundFile.getAbsoluteFile(), e);
 		} catch (IOException e) {
-			log.error("An I/O error occured while reading the audio file " + soundFile.getAbsoluteFile() + " (close)",
+			log.error("An I/O error occurred while reading the audio file " + soundFile.getAbsoluteFile() + " (close)",
 					e);
 		} catch (UnsupportedAudioFileException e) {
 			log.error("Unsupported audio format audio found while reading the file " + soundFile.getAbsolutePath(), e);

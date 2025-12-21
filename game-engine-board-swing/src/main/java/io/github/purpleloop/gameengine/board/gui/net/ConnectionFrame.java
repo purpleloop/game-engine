@@ -245,7 +245,7 @@ public class ConnectionFrame extends JFrame implements StarterObserver, NetConne
 				call.setEnabled(false);
 				btDisconnect.setEnabled(true);
 			} catch (NetException e) {
-				communicationArea.append("A network problem occured : " + e.getLocalizedMessage() + NEW_LINE);
+				communicationArea.append("A network problem occurred : " + e.getLocalizedMessage() + NEW_LINE);
 			}
 		}
 

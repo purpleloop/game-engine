@@ -90,7 +90,7 @@ public class GameConfig implements ISoundFileResolver {
         try {
             doc = XMLTools.getDocument(is);
         } catch (PurpleException e1) {
-            log.error("An error occured while reading the game engine configuration file "
+            log.error("An error occurred while reading the game engine configuration file "
                     + configFileName, e1);
             throw new EngineException(
                     "The reading of the game engine configuration fil has failed.");

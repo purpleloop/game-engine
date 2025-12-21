@@ -85,7 +85,7 @@ public class GameThread extends Thread {
 			}
 
 		} catch (EngineException e) {
-			log.error("An exception occured on the game engine thread :", e);
+			log.error("An exception occurred on the game engine thread :", e);
 		} finally {
 
 			log.info("The game thread is ending ...");
