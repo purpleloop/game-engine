@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import io.github.purpleloop.commons.direction.Direction;
-import io.github.purpleloop.commons.lang.Byte2DMatrix;
+import io.github.purpleloop.commons.math.algebra.Byte2DMatrix;
 import io.github.purpleloop.gameengine.action.model.interfaces.ISession;
 import io.github.purpleloop.gameengine.action.model.objects.Agent;
 import io.github.purpleloop.gameengine.action.model.objects.GridMobile;
