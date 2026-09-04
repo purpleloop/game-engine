@@ -19,7 +19,6 @@
 		<dependency>
 			<groupId>io.github.purpleloop</groupId>
 			<artifactId>jorbis-player-lib</artifactId>
-			<version>0.0.17-lib-0.0.1-SNAPSHOT</version>
 		</dependency>
 	
 		<dependency>

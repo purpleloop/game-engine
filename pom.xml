@@ -27,12 +27,14 @@
     </scm>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>25</java.version>
+        <maven.compiler.release>25</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<purple-commons.version>1.0.0-SNAPSHOT</purple-commons.version>
 		<purple-commons-swing.version>1.0.0-SNAPSHOT</purple-commons-swing.version>
-		<log4j.version>2.24.3</log4j.version>
-		<commons-lang.version>3.18.0</commons-lang.version>
+		<log4j.version>2.26.1</log4j.version>
+		<commons-lang.version>3.20.0</commons-lang.version>
+		<jorbis.version>0.0.17-lib-0.0.1-SNAPSHOT</jorbis.version>
 		<junit.version>5.11.4</junit.version>
 	</properties>
 
@@ -40,12 +42,11 @@
 		<plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.15.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
 					<release>${java.version}</release>
-					<compilerVersion>${java.version}</compilerVersion>
 					<encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
@@ -97,6 +98,12 @@
                 <artifactId>log4j-jcl</artifactId>
                 <version>${log4j.version}</version>
             </dependency>
+            
+            <dependency>
+                <groupId>io.github.purpleloop</groupId>
+                <artifactId>jorbis-player-lib</artifactId>
+                <version>${jorbis.version}</version>
+            </dependency>            
 
 		</dependencies>
 	</dependencyManagement>
